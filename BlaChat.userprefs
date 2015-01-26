@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="BlaChat\BlaChat.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.Nexus_5_x64" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\MainActivity.cs">
+    <Files>
+      <File FileName="BlaChat\MainActivity.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
