@@ -1,5 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="BlaChat.BlaChat">
-	<uses-sdk />
-	<application android:label="BlaChat"></application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.1" package="BlaChat.BlaChat" android:versionCode="2">
+	<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
+	<application android:label="BlaChat" android:icon="@drawable/icon"></application>
+	<service android:name="BackgroundService"></service>
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<receiver android:name="BootReciever" android:enabled="true" android:exported="false" android:label="BootHandler">
+		<intent-filter>
+			<action android:name="android.intent.action.BOOT_COMPLETED" />
+		</intent-filter>
+	</receiver>
 </manifest>

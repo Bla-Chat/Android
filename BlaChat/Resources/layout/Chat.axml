@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="63.7dp"
+        android:id="@+id/chatRow"
+        android:tag="ChatRow">
+        <ImageView
+            android:src="@android:drawable/ic_menu_gallery"
+            android:layout_width="59.0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/chatImage"
+            android:tag="Image" />
+        <Space
+            android:layout_width="11.2dp"
+            android:layout_height="match_parent"
+            android:id="@+id/space1" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/chatLayout"
+            android:tag="Chat Layout">
+            <TextView
+                android:text="Chat Name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/chatName"
+                android:hint="Chat Name"
+                android:tag="Chat Name" />
+            <TextView
+                android:text="Last Chat Message"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/chatMessage"
+                android:tag="Chat Message"
+                android:hint="Last Chat Message" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

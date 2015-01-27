@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TextView
+        android:text="Username"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/usernameLabel"
+        android:tag="UsernameLabel" />
+    <EditText
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/username"
+        android:hint="user"
+        android:tag="Username" />
+    <TextView
+        android:text="Password"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordLabel"
+        android:tag="PasswordLabel" />
+    <EditText
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/password"
+        android:hint="password"
+        android:tag="Password" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16.1dp"
+        android:id="@+id/space2" />
+    <TextView
+        android:text="Server (optional)"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/serverLabel"
+        android:tag="ServerLabel" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/server"
+        android:tag="Server"
+        android:hint="https://www.ssl-id.de/bla.f-online.net/api"
+        android:inputType="textUri" />
+    <Button
+        android:text="Login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login"
+        android:tag="Login" />
+</LinearLayout>

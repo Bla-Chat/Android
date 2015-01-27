@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <ScrollView
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/messageScrollView"
+        android:layout_marginBottom="60dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/messageLayout" />
+    </ScrollView>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout1"
+        android:gravity="right"
+        android:layout_marginTop="-60dp">
+        <EditText
+            android:inputType="textMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/message"
+            android:layout_marginRight="100dp"
+            android:hint="Insert message" />
+        <Button
+            android:text="Send"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/send"
+            android:layout_marginLeft="-100dp"
+            android:maxWidth="90dp"
+            android:tag="Send" />
+    </LinearLayout>
+</LinearLayout>
