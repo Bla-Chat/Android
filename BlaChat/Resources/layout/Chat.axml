@@ -17,11 +17,8 @@
             android:layout_height="match_parent"
             android:id="@+id/chatImage"
             android:adjustViewBounds="true"
+            android:layout_marginBottom="11dp"
             android:tag="Image" />
-        <Space
-            android:layout_width="11.2dp"
-            android:layout_height="match_parent"
-            android:id="@+id/space1" />
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

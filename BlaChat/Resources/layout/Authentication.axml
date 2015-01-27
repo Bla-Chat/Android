@@ -28,13 +28,10 @@
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:id="@+id/password"
         android:hint="password"
         android:tag="Password" />
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="16.1dp"
-        android:id="@+id/space2" />
     <TextView
         android:text="Server (optional)"
         android:textAppearance="?android:attr/textAppearanceMedium"

@@ -34,12 +34,9 @@
                 android:text="Text"
                 android:id="@+id/messageText"
                 android:tag="Message Text"
+                android:layout_marginBottom="13dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="13.3dp"
-        android:id="@+id/space1" />
 </LinearLayout>
