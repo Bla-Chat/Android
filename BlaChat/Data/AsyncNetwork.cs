@@ -14,22 +14,81 @@ using Android.Widget;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Android.Util;
+using Android.Graphics;
+using System.Net;
+using System.IO;
+using System.Threading;
+
 
 namespace BlaChat
 {	
 	public class AsyncNetwork
 	{
 		private HttpClient httpClient;
+		private Dictionary<string, Task<Bitmap>> bitmaps = new Dictionary<string, Task<Bitmap>>();
 
 		public AsyncNetwork()
 		{
 			httpClient = new HttpClient();
 		}
 
+		public Task<Bitmap> GetImageBitmapFromUrl(string url)
+		{
+			lock (httpClient) {
+				if (bitmaps.ContainsKey (url)) {
+					return bitmaps [url];
+				}
+				return bitmaps[url] = GetImageBitmapFromUrlAsync(url);
+			}
+		}
+
+		private async Task<Bitmap> GetImageBitmapFromUrlAsync(string url) {
+			Bitmap imageBitmap = null;
+
+			string images = System.IO.Path.Combine (System.Environment.GetFolderPath (System.Environment.SpecialFolder.Personal), "images");
+
+			Directory.CreateDirectory (images);
+
+			string name = url.Substring (url.LastIndexOf ("/") + 1);
+
+			string imageName = System.IO.Path.Combine (images, name);
+			if (!File.Exists (imageName)) {
+				byte[] imageBytes = null;
+				while (imageBytes == null) {
+					try {
+						imageBytes = await httpClient.GetByteArrayAsync (url);
+					} catch (Exception e) {
+						Log.Error ("NetworkImage", e.StackTrace);
+					}
+				}
+				if (imageBytes != null && imageBytes.Length > 0) {
+					imageBitmap = BitmapFactory.DecodeByteArray (imageBytes, 0, imageBytes.Length);
+				}
+				try {
+					Stream s = File.OpenWrite (imageName);
+					imageBitmap.Compress (Bitmap.CompressFormat.Png, 100, s);
+					s.Flush ();
+					s.Close ();
+				} catch (Exception e) {
+					Log.Error ("BitmapFlush", e.StackTrace);
+				}
+			} else {
+				imageBitmap = BitmapFactory.DecodeFile (imageName, new BitmapFactory.Options ());
+			}
+			return imageBitmap;
+		}
+
 		public async Task<string> Download(string url)
 		{
-			Task<string> contentsTask = httpClient.GetStringAsync(url);
-			return await contentsTask;
+			string contentsTask = null;
+			while (contentsTask == null) {
+				try {
+					contentsTask = await httpClient.GetStringAsync (url);
+				} catch (Exception e) {
+					Log.Error ("NetworkDownload", e.StackTrace);
+				}
+			}
+			return contentsTask;
 		}
 
 		public async Task<bool> Authenticate(DataBaseWrapper db, User user)
@@ -200,20 +259,13 @@ namespace BlaChat
 
 			if (result.ContainsKey ("onGetHistory")) {
 				var arr = result ["onGetHistory"];
-				//foreach (JsonValue v in arr) {
 				var msgs = arr ["messages"];
 				string conversation = arr ["conversation"];
 
 				foreach (JsonValue x in msgs) {
 					try {
-						bool found = false;
-						foreach (var s in db.Table<Message>()) {
-							if (s.nick == x["nick"] && s.conversation == conversation  && s.author == x["author"]  && s.text == x["text"]  && s.time == x["time"]) {
-								found = true;
-								break;
-							}
-						}
-						if (!found) {
+						var tmp = db.Table<Message>().Reverse().Where(s => s.nick == x["nick"] && s.conversation == conversation  && s.author == x["author"]  && s.text == x["text"]  && s.time == x["time"]).FirstOrDefault();
+						if (tmp == null) {
 							var msg = new Message ();
 							msg.conversation = conversation;
 							msg.author = x ["author"];
@@ -226,7 +278,6 @@ namespace BlaChat
 						Log.Error ("AsyncNetworkError", e.StackTrace);
 					}
 				}
-				//}
 				return true;
 			}
 

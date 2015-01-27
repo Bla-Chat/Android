@@ -30,12 +30,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/messageCaption" />
-            <TextView
-                android:text="Text"
-                android:id="@+id/messageText"
-                android:tag="Message Text"
+            <ImageView
+                android:src="@android:drawable/ic_menu_gallery"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:id="@+id/contentImage"
+                android:maxHeight="300dp" />
         </LinearLayout>
     </LinearLayout>
     <Space

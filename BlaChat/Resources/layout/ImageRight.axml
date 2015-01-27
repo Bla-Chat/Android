@@ -12,13 +12,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/messageCaption"
         android:gravity="right" />
-    <TextView
-        android:text="Text"
+    <ImageView
+        android:src="@android:drawable/ic_menu_gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/messageText"
-        android:gravity="right"
-        android:tag="Message Text" />
+        android:id="@+id/contentImage"
+        android:adjustViewBounds="true"
+        android:maxHeight="300dp" />
     <Space
         android:layout_width="match_parent"
         android:layout_height="13.3dp"

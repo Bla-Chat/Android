@@ -1,17 +1,6 @@
 ﻿<Properties StartupItem="BlaChat\BlaChat.csproj" GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.PMDroid:5555" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\MainActivity.cs">
-    <Files>
-      <File FileName="BlaChat\ChatActivity.cs" Line="51" Column="51" />
-      <File FileName="BlaChat\Properties\AndroidManifest.xml" Line="12" Column="12" />
-      <File FileName="BlaChat\Properties\AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\MainActivity.cs" Line="72" Column="72" />
-      <File FileName="BlaChat\Resources\values\Strings.xml" Line="12" Column="12" />
-      <File FileName="BlaChat\Resources\Resource.designer.cs" Line="34" Column="34" />
-      <File FileName="BlaChat\Data\AsyncNetwork.cs" Line="27" Column="27" />
-      <File FileName="BlaChat\BackgroundService.cs" Line="4" Column="4" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.Nexus 5 (KitKat)" />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -15,8 +15,10 @@ namespace BlaChat
 	[Activity (Label = "BlaChat", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
+		public BackgroundService service;
 		private AsyncNetwork network = new AsyncNetwork();
 		private DataBaseWrapper db = null;
+		private ServiceConnection serviceConnection = null;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -33,6 +35,25 @@ namespace BlaChat
 			}
 		}
 
+		public void OnUpdateRequested() {
+			User user = db.Table<User>().FirstOrDefault ();
+			if (user != null && user.user != null) {
+				RunOnUiThread (() => ShowChats (user));
+			}
+		}
+
+		public void OnBind() {
+			if (service != null) {
+				service.ResetUpdateInterval ();
+			}
+		}
+
+		public void OnUnBind() {
+			if (service != null) {
+				service.ResetUpdateInterval ();
+			}
+		}
+
 		protected async override void OnResume() {
 			base.OnResume ();
 			User user = db.Table<User>().FirstOrDefault ();
@@ -40,10 +61,36 @@ namespace BlaChat
 				await network.UpdateChats (db, user);
 				ShowChats (user);
 			}
+
+			OnBind ();
+		}
+
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+
+			if (service != null) {
+				UnbindService (serviceConnection);
+				OnUnBind ();
+				service = null;
+			}
+		}
+
+		protected override void OnPause ()
+		{
+			base.OnPause ();
+			OnUnBind ();
 		}
 
 		private void initializeAuthenticated(User user) {
 			StartService (new Intent (this, typeof(BackgroundService)));
+
+			if (service == null) {
+				var sericeIntent = new Intent (this, typeof(BackgroundService));
+				serviceConnection = new ServiceConnection (this);
+				BindService (sericeIntent, serviceConnection, Bind.AutoCreate);
+			}
+
 			SetContentView (Resource.Layout.Main);
 			ShowChats (user);
 		}
@@ -52,8 +99,9 @@ namespace BlaChat
 			TextView placeholder = FindViewById<TextView> (Resource.Id.placeholder);
 			var x = db.Table<Chat> ();
 			if (x.Count() > 0) {
-				placeholder.Text = x.Count() + " chats found.";
+				placeholder.Visibility = ViewStates.Gone;
 			} else {
+				placeholder.Visibility = ViewStates.Visible;
 				placeholder.Text = "No chats found.";
 			}
 			LinearLayout chatList = FindViewById<LinearLayout> (Resource.Id.chatList);
@@ -62,6 +110,25 @@ namespace BlaChat
 				View v = LayoutInflater.Inflate (Resource.Layout.Chat, null);
 				TextView name = v.FindViewById<TextView>(Resource.Id.chatName);
 				TextView message = v.FindViewById<TextView>(Resource.Id.chatMessage);
+				ImageView image = v.FindViewById<ImageView> (Resource.Id.chatImage);
+
+				new Thread (async () => {
+					try {
+						string conv = elem.conversation;
+						if (conv.Split(',').Length == 2) {
+							if (conv.Split(',')[0] == user.user) {
+								conv = conv.Split(',')[1];
+							} else {
+								conv = conv.Split(',')[0];
+							}
+						}
+						var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + conv + ".png");
+						RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
+					} catch (Exception e) {
+						Log.Error("ChatMessageImage", e.StackTrace);
+					}
+				}).Start();
+
 				name.Text = elem.name;
 				var tmp = db.Table<Message> ().Where (q => q.conversation == elem.conversation).OrderByDescending (q => q.time);
 				var lastMsg = tmp.FirstOrDefault ();
@@ -83,6 +150,7 @@ namespace BlaChat
 				};
 				chatList.AddView(v);
 			}
+			chatList.Post(() => chatList.RequestLayout ());
 		}
 
 		private void initializeNotAuthenticated() {

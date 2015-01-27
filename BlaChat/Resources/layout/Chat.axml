@@ -16,6 +16,7 @@
             android:layout_width="59.0dp"
             android:layout_height="match_parent"
             android:id="@+id/chatImage"
+            android:adjustViewBounds="true"
             android:tag="Image" />
         <Space
             android:layout_width="11.2dp"
@@ -34,15 +35,19 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/chatName"
                 android:hint="Chat Name"
-                android:tag="Chat Name" />
+                android:tag="Chat Name"
+                android:singleLine="true" />
             <TextView
                 android:text="Last Chat Message"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/chatMessage"
                 android:tag="Chat Message"
-                android:hint="Last Chat Message" />
+                android:hint="Last Chat Message"
+                android:minLines="1"
+                android:maxLines="1"
+                android:singleLine="true" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

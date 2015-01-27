@@ -5,6 +5,8 @@ using System.Threading;
 using Android.Content;
 using Android.OS;
 using System.Threading.Tasks;
+using Android.Support.V4.App;
+using Android.Media;
 
 
 namespace BlaChat
@@ -12,14 +14,23 @@ namespace BlaChat
 	[Service]
 	public class BackgroundService : Service
 	{
+		public string ActiveConversation { set; get; }
+		public MainActivity MainActivity { set; get; }
+		public ChatActivity ChatActivity { set; get; }
 
 		private int UpdateInterval = 10000;
+
 		public BackgroundService ()
 		{
+			ResetUpdateInterval ();
 		}
 
 		public override IBinder OnBind(Intent Intent) {
-			return null;
+			return new ServiceBinder(this);
+		}
+
+		public void ResetUpdateInterval() {
+			UpdateInterval = 200;
 		}
 
 		public override StartCommandResult OnStartCommand (Android.Content.Intent intent, StartCommandFlags flags, int startId)
@@ -75,22 +86,89 @@ namespace BlaChat
 		}
 
 		private async Task<int> HandleEvent(DataBaseWrapper db, AsyncNetwork network, User user, Event e) {
-			if (e.type == "onMessage") {
-				await network.UpdateChats (db, user);
-				var chat = db.Get<Chat> (e.msg);
-				await network.UpdateHistory(db, user, chat, 60);
+			if (e.nick != user.user) {
+				if (e.type == "onMessage") {
+					await network.UpdateChats (db, user);
+					var chat = db.Get<Chat> (e.msg);
+					await network.UpdateHistory(db, user, chat, 1000);
+				}
+				if (e.msg != ActiveConversation) {
+					await Notify (network, e.nick, e.text);
+					if (MainActivity != null) {
+						MainActivity.OnUpdateRequested ();
+					}
+				} else {
+					if (ChatActivity != null) {
+						ChatActivity.OnUpdateRequested ();
+					}
+				}
 			}
-			Notify (e.nick, e.text);
-			UpdateInterval = 200;
+			ResetUpdateInterval ();
 			return 0;
 		}
 
-		private void Notify(string title, string message) {
-			var nMgr = (NotificationManager)GetSystemService (NotificationService);
-			var notification = new Notification (Resource.Drawable.Icon, message);
-			var pendingIntent = PendingIntent.GetActivity (this, 0, new Intent (this, typeof(BackgroundService)), 0);
-			notification.SetLatestEventInfo (this, title, message, pendingIntent);
-			nMgr.Notify (0, notification);
+		private async Task<int> Notify(AsyncNetwork network, string title, string message) {
+			// Set up an intent so that tapping the notifications returns to this app:
+			Intent intent = new Intent (this, typeof(MainActivity));
+
+			// Create a PendingIntent; we're only using one PendingIntent (ID = 0):
+			const int pendingIntentId = 0;
+			PendingIntent pendingIntent = 
+				PendingIntent.GetActivity (this, pendingIntentId, intent, PendingIntentFlags.OneShot);
+			var msg = message;
+			if (msg.StartsWith ("#image")) {
+				msg = "You received an image.";
+			}
+			NotificationCompat.Builder builder = new NotificationCompat.Builder (this)
+				.SetContentIntent (pendingIntent)
+				.SetContentTitle (title)
+				.SetContentText (msg)
+				.SetAutoCancel (true)
+				.SetSound (RingtoneManager.GetDefaultUri (RingtoneType.Notification))
+				.SetSmallIcon (Resource.Drawable.Icon);
+				
+
+			if ((int)Android.OS.Build.VERSION.SdkInt >= 14) {
+				builder.SetLights(Android.Graphics.Color.Magenta , 500, 500);
+				if (message.StartsWith ("#image")) {
+					// Instantiate the Image (Big Picture) style:
+					NotificationCompat.BigPictureStyle picStyle = new NotificationCompat.BigPictureStyle ();
+
+					// Convert the image to a bitmap before passing it into the style:
+					picStyle.BigPicture (await network.GetImageBitmapFromUrl (message.Substring ("#image ".Length)));
+
+					// Set the summary text that will appear with the image:
+					picStyle.SetSummaryText (msg);
+
+					// Plug this style into the builder:
+					builder.SetStyle (picStyle);
+				} else {
+					NotificationCompat.BigTextStyle textStyle = new NotificationCompat.BigTextStyle ();
+
+					// Fill it with text:
+					textStyle.BigText (message);
+
+					// Set the summary text:
+					textStyle.SetSummaryText ("New message");
+					builder.SetStyle (textStyle);
+				}
+			}
+
+			// Build the notification:
+			Notification notification = builder.Build();
+
+			// Get the notification manager:
+			NotificationManager notificationManager =
+				GetSystemService (Context.NotificationService) as NotificationManager;
+
+			// Publish the notification:
+			const int notificationId = 0;
+			notificationManager.Notify (notificationId, notification);
+
+			Vibrator v = (Vibrator) GetSystemService(Context.VibratorService); // Make phone vibrate
+			v.Vibrate(300);
+
+			return notificationId;
 		}
 	}
 }

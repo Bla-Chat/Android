@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.1" package="BlaChat.BlaChat" android:versionCode="2">
-	<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="21" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.3" package="BlaChat.BlaChat" android:versionCode="4">
+	<uses-sdk android:minSdkVersion="10" android:targetSdkVersion="21" />
 	<application android:label="BlaChat" android:icon="@drawable/icon"></application>
 	<service android:name="BackgroundService"></service>
 	<uses-permission android:name="android.permission.INTERNET" />

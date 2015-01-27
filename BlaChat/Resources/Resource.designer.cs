@@ -66,8 +66,8 @@ namespace BlaChat
 			// aapt resource value: 0x7f06000b
 			public const int chatLayout = 2131099659;
 			
-			// aapt resource value: 0x7f060015
-			public const int chatList = 2131099669;
+			// aapt resource value: 0x7f06001c
+			public const int chatList = 2131099676;
 			
 			// aapt resource value: 0x7f06000d
 			public const int chatMessage = 2131099661;
@@ -78,26 +78,44 @@ namespace BlaChat
 			// aapt resource value: 0x7f060008
 			public const int chatRow = 2131099656;
 			
+			// aapt resource value: 0x7f060019
+			public const int contentImage = 2131099673;
+			
 			// aapt resource value: 0x7f060010
-			public const int linearLayout1 = 2131099664;
+			public const int defaultMessages = 2131099664;
+			
+			// aapt resource value: 0x7f060011
+			public const int lessMessages = 2131099665;
+			
+			// aapt resource value: 0x7f060014
+			public const int linearLayout1 = 2131099668;
+			
+			// aapt resource value: 0x7f06000e
+			public const int linearLayout2 = 2131099662;
 			
 			// aapt resource value: 0x7f060007
 			public const int login = 2131099655;
 			
-			// aapt resource value: 0x7f060011
-			public const int message = 2131099665;
+			// aapt resource value: 0x7f060015
+			public const int message = 2131099669;
 			
-			// aapt resource value: 0x7f060016
-			public const int messageImage = 2131099670;
-			
-			// aapt resource value: 0x7f06000f
-			public const int messageLayout = 2131099663;
-			
-			// aapt resource value: 0x7f06000e
-			public const int messageScrollView = 2131099662;
+			// aapt resource value: 0x7f060018
+			public const int messageCaption = 2131099672;
 			
 			// aapt resource value: 0x7f060017
-			public const int messageText = 2131099671;
+			public const int messageImage = 2131099671;
+			
+			// aapt resource value: 0x7f060013
+			public const int messageLayout = 2131099667;
+			
+			// aapt resource value: 0x7f060012
+			public const int messageScrollView = 2131099666;
+			
+			// aapt resource value: 0x7f06001d
+			public const int messageText = 2131099677;
+			
+			// aapt resource value: 0x7f06000f
+			public const int moreMessages = 2131099663;
 			
 			// aapt resource value: 0x7f060003
 			public const int password = 2131099651;
@@ -105,14 +123,14 @@ namespace BlaChat
 			// aapt resource value: 0x7f060002
 			public const int passwordLabel = 2131099650;
 			
-			// aapt resource value: 0x7f060013
-			public const int placeholder = 2131099667;
+			// aapt resource value: 0x7f06001a
+			public const int placeholder = 2131099674;
 			
-			// aapt resource value: 0x7f060014
-			public const int scrollView1 = 2131099668;
+			// aapt resource value: 0x7f06001b
+			public const int scrollView1 = 2131099675;
 			
-			// aapt resource value: 0x7f060012
-			public const int send = 2131099666;
+			// aapt resource value: 0x7f060016
+			public const int send = 2131099670;
 			
 			// aapt resource value: 0x7f060006
 			public const int server = 2131099654;
@@ -155,13 +173,19 @@ namespace BlaChat
 			public const int ChatActivity = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int Main = 2130903043;
+			public const int ImageLeft = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int MessageLeft = 2130903044;
+			public const int ImageRight = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int MessageRight = 2130903045;
+			public const int Main = 2130903045;
+			
+			// aapt resource value: 0x7f030006
+			public const int MessageLeft = 2130903046;
+			
+			// aapt resource value: 0x7f030007
+			public const int MessageRight = 2130903047;
 			
 			static Layout()
 			{
@@ -194,6 +218,9 @@ namespace BlaChat
 			
 			// aapt resource value: 0x7f050000
 			public const int app_name = 2131034112;
+			
+			// aapt resource value: 0x7f050001
+			public const int profileUrl = 2131034113;
 			
 			static String()
 			{

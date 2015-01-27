@@ -19,6 +19,21 @@ namespace BlaChat
 		public Message ()
 		{
 		}
+
+		public override bool Equals (object obj)
+		{
+			if (obj.GetType() == typeof(Message)) {
+				Message other = (Message)obj;
+				return conversation == other.conversation && author == other.author && nick == other.nick && time == other.time && text == other.text;
+			} else {
+				return false;
+			}
+		}
+
+		public override int GetHashCode ()
+		{
+			return conversation.GetHashCode()  + author.GetHashCode() + nick.GetHashCode() + time.GetHashCode() + text.GetHashCode();
+		}
 	}
 }
 

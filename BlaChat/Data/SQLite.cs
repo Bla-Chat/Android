@@ -411,7 +411,6 @@ namespace SQLite
 				// Table already exists, migrate it
 				MigrateTable (map);
 			}
-
 			var indexes = new Dictionary<string, IndexInfo> ();
 			foreach (var c in map.Columns) {
 				foreach (var i in c.Indices) {

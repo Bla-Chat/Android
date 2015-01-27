@@ -44,7 +44,6 @@ namespace BlaChat
 			lock (locker) {
 				#if __ANDROID__
 				var docFolder = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
-				Console.WriteLine ("Data path:" + sqliteFilename);
 				var dbFile = Path.Combine (docFolder, sqliteFilename); // FILE NAME TO USE WHEN COPIED
 				if (!System.IO.File.Exists (dbFile)) {
 					var s = resources.OpenRawResource (Resource.Raw.data);  // DATA FILE RESOURCE ID
