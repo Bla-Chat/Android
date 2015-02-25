@@ -6,7 +6,7 @@ A secure and open source smartphone chat application, to give you insight what h
 Compatible with servers supporting the xjcp-protocol.
 Currently the only software implementing this protocol is BlaChatServer (https://github.com/Bla-Chat/server).
 
-<p><a href="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/BlaSmartphoneMessages.png"><img src="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/BlaSmartphoneMessages.png" height="400" target="_blank" /></a> <a href="httphttp://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/BlaSmartphoneChats.png"><img src="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/BlaSmartphoneChats.png" height="400" target="_blank" /></a></p>
+<p><a href="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/Screenshot_2015-02-25-19-50-30.png"><img src="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/Screenshot_2015-02-25-19-50-30.png" height="400" target="_blank" /></a> <a href="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/Screenshot_2015-02-25-19-50-38.png"><img src="http://www.michaelfuerst.de/wordpress/wp-content/uploads/2015/02/Screenshot_2015-02-25-19-50-38.png" height="400" target="_blank" /></a></p>
 
 ## Installation
 
