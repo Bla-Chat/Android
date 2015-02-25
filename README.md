@@ -21,28 +21,18 @@ Install it. You may need to allow apps from unknown sources in the options of yo
 Bla chat supports multiple conversations with any amount of users.
 
 It supports:
-
-*Plain text mssages
-
-*Send and view images
-
-*Notifications (synched across devices)
-
-*Group conversations
-
-*Browse messages offline
-
-*Encrypted connection
-
-*Any server can be used
+* Plain text mssages
+* Send and view images
+* Notifications (synched across devices)
+* Group conversations
+* Browse messages offline
+* Encrypted connection
+* Any server can be used
 
 What does not yet work:
-
-*Settings (configure sync, led, vibrate and ringtone)
-
-*Create coversations
-
-*Add friends
+* Settings (configure sync, led, vibrate and ringtone)
+* Create coversations
+* Add friends
 
 ## Contributing
 
