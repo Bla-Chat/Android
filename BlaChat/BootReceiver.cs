@@ -1,9 +1,8 @@
-﻿using System;
-using Android.Content;
+﻿using Android.Content;
 
 namespace BlaChat
 {
-	[BroadcastReceiver]
+	[BroadcastReceiver(Enabled = true)]
 	class BootReceiver : BroadcastReceiver {
 		public override void OnReceive(Context ctx, Intent intent) {
 			ctx.StartService (new Intent (ctx, typeof(BackgroundService)));

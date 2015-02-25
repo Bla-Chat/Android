@@ -17,7 +17,11 @@ namespace BlaChat
 		public string ActiveConversation { set; get; }
 		public MainActivity MainActivity { set; get; }
 		public ChatActivity ChatActivity { set; get; }
+		public int Mode { set; get; }
 
+		private DataBaseWrapper db = null;
+		private AsyncNetwork network = null;
+		private User user = null;
 		private int UpdateInterval = 10000;
 
 		public BackgroundService ()
@@ -36,21 +40,24 @@ namespace BlaChat
 		public override StartCommandResult OnStartCommand (Android.Content.Intent intent, StartCommandFlags flags, int startId)
 		{
 			Log.Debug ("BackgroundService", "BackgroundService started");
+			ResetUpdateInterval ();
 			DoWork ();
 			return StartCommandResult.Sticky;
 		}
 
 		public void DoWork ()
 		{
-			AsyncNetwork network = new AsyncNetwork ();
-			DataBaseWrapper db = new DataBaseWrapper (this.Resources);
+			db = new DataBaseWrapper (Resources);
+			network = new AsyncNetwork ();
+			network.SetBackgroundService (this);
+			user = db.Table<User>().FirstOrDefault ();
 
-			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
 				var t = new Thread (async () => {
 					while (true) {
 						await network.UpdateEvents (db, user);
-						Thread.Sleep (UpdateInterval);
+						Thread.Sleep (UpdateInterval * Mode);
+
 						if (UpdateInterval < 2000) {
 							UpdateInterval += 100;
 						} else if (UpdateInterval < 10000) {
@@ -66,42 +73,38 @@ namespace BlaChat
 				}
 				);
 				t.Start ();
-				var t2 = new Thread (async () => {
-					while (true) {
-						var events = db.Table<Event>();
-						foreach(var x in events) {
-							await HandleEvent(db, network, user, x);
-							db.Delete<Event>(x.id);
-						}
-						// Cap update at min once per 10s.
-						int d = UpdateInterval / 10;
-						Thread.Sleep (d < 10000 ? d : 10000);
-					}
-				}
-				);
-				t2.Start ();
 			} else {
-				this.StopSelf ();
+				StopSelf ();
 			}
 		}
 
+		public async Task<int> UpdateNotifications() {
+			if (db != null && network != null && user != null) {
+				var events = db.Table<Event> ();
+				foreach (var x in events) {
+					await HandleEvent (db, network, user, x);
+					db.Delete<Event> (x.id);
+				}
+			}
+			return 0;
+		}
+
 		private async Task<int> HandleEvent(DataBaseWrapper db, AsyncNetwork network, User user, Event e) {
-			if (e.nick != user.user) {
-				if (e.type == "onMessage") {
-					await network.UpdateChats (db, user);
-					var chat = db.Get<Chat> (e.msg);
-					await network.UpdateHistory(db, user, chat, 1000);
-				}
-				if (e.msg != ActiveConversation) {
+			if (e.type == "onMessage") {
+				await network.UpdateChats (db, user);
+				var chat = db.Get<Chat> (e.msg);
+				await network.UpdateHistory (db, user, chat, 10);
+			}
+			if (e.msg != ActiveConversation) {
+				if (user.user != e.nick) {
 					await Notify (network, e.nick, e.text);
-					if (MainActivity != null) {
-						MainActivity.OnUpdateRequested ();
-					}
-				} else {
-					if (ChatActivity != null) {
-						ChatActivity.OnUpdateRequested ();
-					}
 				}
+			}
+			if (MainActivity != null) {
+				MainActivity.OnUpdateRequested ();
+			}
+			if (ChatActivity != null) {
+				ChatActivity.OnUpdateRequested ();
 			}
 			ResetUpdateInterval ();
 			return 0;
@@ -135,7 +138,7 @@ namespace BlaChat
 					NotificationCompat.BigPictureStyle picStyle = new NotificationCompat.BigPictureStyle ();
 
 					// Convert the image to a bitmap before passing it into the style:
-					picStyle.BigPicture (await network.GetImageBitmapFromUrl (message.Substring ("#image ".Length)));
+					picStyle.BigPicture (await network.GetImageBitmapFromUrlNoCache (message.Substring ("#image ".Length)));
 
 					// Set the summary text that will appear with the image:
 					picStyle.SetSummaryText (msg);

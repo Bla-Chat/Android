@@ -1,23 +1,30 @@
 ﻿<Properties StartupItem="BlaChat\BlaChat.csproj" GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.Nexus 5 (KitKat)" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\Data\DataBaseWrapper.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.Nexus 5 (KitKat)" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\Properties\AndroidManifest.xml">
     <Files>
       <File FileName="BlaChat\MainActivity.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\Data\DataBaseWrapper.cs" Line="29" Column="29" />
-      <File FileName="BlaChat\Data\AsyncNetwork.cs" Line="23" Column="23" />
+      <File FileName="BlaChat\Data\DataBaseWrapper.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\AsyncNetwork.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Chat.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Contact.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\ChatActivity.cs" Line="1" Column="1" />
+      <File FileName="..\..\..\..\..\..\Program Files (x86)\MSBuild\Xamarin\Android\Xamarin.Android.Common.targets" Line="1" Column="1" />
+      <File FileName="BlaChat\BackgroundService.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Event.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Message.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\SQLite.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\User.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\BootReceiver.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\ServiceConnection.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\TimeConverter.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Properties\AndroidManifest.xml" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="BlaChat" expanded="True" selected="True">
-            <Node name="Data" expanded="True" />
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\Michael\Documents\Projects\bla-chat\bla-chat-smartphone\BlaChat\ChatActivity.cs" line="72" column="1" />
+      <Breakpoint file="C:\Users\Michael\Documents\Projects\bla-chat\bla-chat-smartphone\BlaChat\BackgroundService.cs" line="103" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.BlaChat MonoForAntroid.PreferredDevice="Nexus 4" />

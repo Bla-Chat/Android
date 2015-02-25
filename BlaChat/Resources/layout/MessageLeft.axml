@@ -12,13 +12,10 @@
             android:src="@android:drawable/ic_menu_gallery"
             android:id="@+id/messageImage"
             android:adjustViewBounds="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32.0dp"
+            android:layout_height="32.0dp"
             android:tag="Message Image"
-            android:minWidth="32dp"
-            android:minHeight="32dp"
-            android:maxWidth="32dp"
-            android:maxHeight="32dp" />
+            android:scaleType="centerInside" />
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -29,14 +26,17 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/messageCaption" />
+                android:id="@+id/messageCaption"
+                android:paddingLeft="4dp" />
             <TextView
                 android:text="Text"
                 android:id="@+id/messageText"
                 android:tag="Message Text"
                 android:layout_marginBottom="13dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="40dp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

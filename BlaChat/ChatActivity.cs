@@ -17,12 +17,15 @@ using System.Threading;
 using Android.Util;
 using Android.Graphics;
 using System.Net;
+using Android.Provider;
 
 namespace BlaChat
 {
-	[Activity (Label = "BlaChat", Icon = "@drawable/icon")]	
+	[Activity (Label = "BlaChat", Icon = "@drawable/icon", WindowSoftInputMode=SoftInput.StateHidden, ParentActivity=typeof(MainActivity))]
 	public class ChatActivity : Activity
 	{
+		public static readonly int PickImageId = 1000;
+
 		public BackgroundService service;
 		private ServiceConnection serviceConnection = null;
 		private AsyncNetwork network = new AsyncNetwork();
@@ -30,6 +33,8 @@ namespace BlaChat
 		private string conversation;
 		private int visibleMessages = 30;
 		private List<Message> displayedMessages = new List<Message> ();
+		private Chat chat;
+		private User user;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -41,62 +46,142 @@ namespace BlaChat
 
 			conversation = Intent.GetStringExtra ("conversation");
 
-			var chat = db.Get<Chat> (conversation);
-			Title = "BlaChat " + chat.name;
+			chat = db.Get<Chat> (conversation);
+			Title = chat.name;
+			ActionBar.SetDisplayHomeAsUpEnabled(true);
+			ActionBar.SetIcon (Resource.Drawable.Icon);
 
-			TextView message = FindViewById<TextView> (Resource.Id.message);
-			InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
-			manager.HideSoftInputFromWindow(message.WindowToken, 0);
-			message.Post(() => manager.HideSoftInputFromWindow(message.WindowToken, 0));
-
-			User user = db.Table<User>().FirstOrDefault ();
+			user = db.Table<User>().FirstOrDefault ();
 
 			Button send = FindViewById<Button> (Resource.Id.send);
-			send.Click += async delegate {
+			send.Click += delegate {
+				TextView message = FindViewById<TextView> (Resource.Id.message);
 				var msg = message.Text;
 				message.Text = "";
 
-				await network.SendMessage (db, user, chat, msg);
-				await network.UpdateHistory (db, user, chat, 30);
-				UpdateMessagesScrollDown (user);
-				OnBind();
-			};
+				if (msg.Equals("")) return;
 
-			Button more = FindViewById<Button> (Resource.Id.moreMessages);
-			more.Click += delegate {
-				visibleMessages *= 2;
-				UpdateMessages (user);
+				string tmp = send.Text;
+				send.Text = "...";
+				send.Enabled = false;
+
+				InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
+				manager.HideSoftInputFromWindow(message.WindowToken, 0);
+				message.Post(() => manager.HideSoftInputFromWindow(message.WindowToken, 0));
+
+				OnBind();
 				new Thread(async () => {
-					await network.UpdateHistory (db, user, chat, visibleMessages);
+					await network.SendMessage (db, user, chat, msg);
+					RunOnUiThread(() => {
+						send.Text = tmp;
+						send.Enabled = true;
+					});
+				}).Start();
+			};
+		}
+
+		public override bool OnPrepareOptionsMenu(IMenu menu)
+		{
+			menu.Clear ();
+			MenuInflater.Inflate(Resource.Menu.chat, menu);
+			if (visibleMessages <= 30) {
+				var item = menu.FindItem (Resource.Id.action_lessMessages);
+				item.SetVisible (false);
+			}
+			return base.OnPrepareOptionsMenu(menu);
+		}
+
+		public override bool OnOptionsItemSelected(IMenuItem item)
+		{
+			switch (item.ItemId)
+			{
+			case Resource.Id.action_rename:
+				//do something
+				return true;
+			case Resource.Id.action_defaultMessages:
+				defaultMessages();
+				return true;
+			case Resource.Id.action_lessMessages:
+				lessMessages ();
+				return true;
+			case Resource.Id.action_moreMessages:
+				moreMessages ();
+				return true;
+			case Resource.Id.action_sendImage:
+				sendImage ();
+				return true;
+			case Resource.Id.action_setImage:
+				//do something
+				return true;
+			case Resource.Id.action_settings:
+				//do something
+				return true;
+			}
+			return base.OnOptionsItemSelected(item);
+		}
+
+		private void lessMessages() {
+			visibleMessages -= 30;
+			UpdateMessages (user);
+			InvalidateOptionsMenu ();
+			OnBind();
+		}
+
+		private void defaultMessages() {
+			visibleMessages = 30;
+			UpdateMessages (user);
+			InvalidateOptionsMenu ();
+			OnBind();
+		}
+
+		private void moreMessages() {
+			OnBind();
+
+			visibleMessages += 30;
+
+			var x = db.Table<Message> ();
+			if (x.Where(q => q.conversation == conversation).Count() < visibleMessages) {
+				new Thread(async () => {
+					await network.UpdateHistory(db, user, chat, visibleMessages);
 					RunOnUiThread(() => UpdateMessages (user));
 				}).Start();
-				OnBind();
-			};
-
-			Button less = FindViewById<Button> (Resource.Id.lessMessages);
-			less.Click += delegate {
-				visibleMessages /= 2;
+			} else {
 				UpdateMessages (user);
-				OnBind();
-			};
+			}
+			InvalidateOptionsMenu ();
+		}
 
-			Button defaultMessages = FindViewById<Button> (Resource.Id.defaultMessages);
-			defaultMessages.Click += delegate {
-				visibleMessages = 30;
-				UpdateMessages (user);
-				OnBind();
-			};
+		private void sendImage() {
+			OnBind ();
+
+			Intent pickIntent = new Intent ();
+			pickIntent.SetType ("image/*");
+			pickIntent.SetAction (Intent.ActionGetContent);
+			StartActivityForResult (Intent.CreateChooser (pickIntent, "Select Picture"), PickImageId);
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
+			base.OnActivityResult (requestCode, resultCode, data);
+			if (requestCode == PickImageId && resultCode == Result.Ok && data != null) {
+				Toast.MakeText (this, "Sending image...", ToastLength.Long);
+
+				Bitmap img = MediaStore.Images.Media.GetBitmap(ContentResolver, data.Data);
+				new Thread(() => network.SendImage (db, user, chat, img)).Start();
+			}
 		}
 
 		public void OnBind() {
 			if (service != null) {
 				service.ResetUpdateInterval ();
 				service.ActiveConversation = conversation;
+				service.ChatActivity = this;
+				network.SetBackgroundService (service);
 			}
 		}
 
 		public void OnUnBind() {
 			if (service != null) {
+				service.ChatActivity = null;
 				service.ResetUpdateInterval ();
 				if (service.ActiveConversation == conversation) {
 					service.ActiveConversation = "";
@@ -113,19 +198,15 @@ namespace BlaChat
 				BindService (sericeIntent, serviceConnection, Bind.AutoCreate);
 			}
 
+			OnBind ();
+
 			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
 				UpdateMessagesScrollDown (user);
-
-				new Thread(async () => {
-					var chat = db.Get<Chat> (conversation);
-					await network.UpdateHistory (db, user, chat, visibleMessages);
-					RunOnUiThread(() => UpdateMessagesScrollDown (user));
-				}).Start();
 			}
 		}
 
-		public void OnUpdateRequested() {
+		public async void OnUpdateRequested() {
 			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
 				RunOnUiThread(() => UpdateMessagesScrollDown (user));
@@ -152,14 +233,9 @@ namespace BlaChat
 		private void UpdateMessagesScrollDown(User user) {
 			UpdateMessages (user);
 
-			TextView message = FindViewById<TextView> (Resource.Id.message);
-			InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
-			manager.HideSoftInputFromWindow(message.WindowToken, 0);
-			message.PostDelayed(() => manager.HideSoftInputFromWindow(message.WindowToken, 0), 200);
-
 			ScrollView scrollView = FindViewById<ScrollView> (Resource.Id.messageScrollView);
 			scrollView.FullScroll(FocusSearchDirection.Down);
-			scrollView.PostDelayed (() => scrollView.FullScroll (FocusSearchDirection.Down), 200);
+			scrollView.Post (() => scrollView.FullScroll (FocusSearchDirection.Down));
 		}
 
 		private void UpdateMessages(User user) {
@@ -167,7 +243,17 @@ namespace BlaChat
 			messageList.RemoveAllViews ();
 			var x = db.Table<Message> ();
 			List<Message> tmp = x.Where(q => q.conversation == conversation).OrderBy(e => e.time).Reverse().Take(visibleMessages).Reverse().ToList();
+			string prevDate = "0000-00-00";
 			foreach (var elem in tmp) {
+				if (!elem.time.StartsWith (prevDate)) {
+					prevDate = TimeConverter.Convert (elem.time, "yyyy-MM-dd");
+					View timeInsert;
+					timeInsert = LayoutInflater.Inflate (Resource.Layout.TimeInsert, null);
+					TextView text = timeInsert.FindViewById<TextView> (Resource.Id.timeInsertTime);
+					text.Text = TimeConverter.AutoConvertDate (elem.time);
+					messageList.AddView(timeInsert);
+				}
+
 				View v = null;
 				if (elem.text.StartsWith ("#image")) {
 					if (elem.nick == user.user) {
@@ -210,14 +296,18 @@ namespace BlaChat
 						}).Start();
 					}
 					TextView text = v.FindViewById<TextView>(Resource.Id.messageText);
-					text.Text = elem.text;
+					var escape = elem.text.Replace ("&quot;", "\"");
+					escape = escape.Replace ("&lt;", "<");
+					escape = escape.Replace ("&gt;", ">");
+					escape = escape.Replace ("&amp;", "&");
+					text.Text = escape;
 				}
 
 				TextView caption = v.FindViewById<TextView>(Resource.Id.messageCaption);
 				if (elem.nick != user.user) {
-					caption.Text = elem.author + " (" + elem.time + ")";
+					caption.Text = elem.author + " (" + elem.time.Substring(11, 5) + ")";
 				} else {
-					caption.Text = "You (" + elem.time + ")";
+					caption.Text = "Du (" + elem.time.Substring(11, 5) + ")";
 				}
 				messageList.AddView(v);
 			}

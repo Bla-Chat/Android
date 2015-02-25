@@ -5,31 +5,31 @@ using System.Linq;
 using System.Text;
 using System.Json;
 
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Android.Util;
 using Android.Graphics;
-using System.Net;
 using System.IO;
 using System.Threading;
-
+using System.Collections.Specialized;
+using System.Net;
 
 namespace BlaChat
 {	
 	public class AsyncNetwork
 	{
 		private HttpClient httpClient;
+		private Semaphore semaphore = new Semaphore (1, 1);
 		private Dictionary<string, Task<Bitmap>> bitmaps = new Dictionary<string, Task<Bitmap>>();
+		private BackgroundService backgroundService = null;
 
 		public AsyncNetwork()
 		{
 			httpClient = new HttpClient();
+		}
+
+		public void SetBackgroundService(BackgroundService bs) {
+			backgroundService = bs;
 		}
 
 		public Task<Bitmap> GetImageBitmapFromUrl(string url)
@@ -39,6 +39,13 @@ namespace BlaChat
 					return bitmaps [url];
 				}
 				return bitmaps[url] = GetImageBitmapFromUrlAsync(url);
+			}
+		}
+
+		public Task<Bitmap> GetImageBitmapFromUrlNoCache (string url)
+		{
+			lock (httpClient) {
+				return GetImageBitmapFromUrlAsync(url);
 			}
 		}
 
@@ -55,10 +62,13 @@ namespace BlaChat
 			if (!File.Exists (imageName)) {
 				byte[] imageBytes = null;
 				while (imageBytes == null) {
+					semaphore.WaitOne();
 					try {
 						imageBytes = await httpClient.GetByteArrayAsync (url);
 					} catch (Exception e) {
 						Log.Error ("NetworkImage", e.StackTrace);
+					} finally {
+						semaphore.Release ();
 					}
 				}
 				if (imageBytes != null && imageBytes.Length > 0) {
@@ -82,10 +92,13 @@ namespace BlaChat
 		{
 			string contentsTask = null;
 			while (contentsTask == null) {
+				semaphore.WaitOne();
 				try {
 					contentsTask = await httpClient.GetStringAsync (url);
 				} catch (Exception e) {
 					Log.Error ("NetworkDownload", e.StackTrace);
+				} finally {
+					semaphore.Release ();
 				}
 			}
 			return contentsTask;
@@ -97,7 +110,6 @@ namespace BlaChat
 
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
 			try {
-				EventHandling (db, result);
 
 				if (result.ContainsKey ("id")) {
 					user.id = result ["id"];
@@ -106,6 +118,8 @@ namespace BlaChat
 				}
 			} catch (Exception ex) {
 				Log.Error ("AsyncNetworkError", ex.StackTrace);
+			} finally {
+				EventHandling (db, result);
 			}
 
 			return false;
@@ -117,7 +131,7 @@ namespace BlaChat
 
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
 			try {
-				EventHandling (db, result);
+				await EventHandling (db, result);
 
 				if (result.ContainsKey ("onGetChats")) {
 					JsonArray arr = (JsonArray)result ["onGetChats"];
@@ -150,7 +164,7 @@ namespace BlaChat
 
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
 			try {
-				EventHandling (db, result);
+				await EventHandling (db, result);
 
 				if (result.ContainsKey ("onGetContacts")) {
 					JsonArray arr = (JsonArray)result ["onGetContacts"];
@@ -178,11 +192,13 @@ namespace BlaChat
 
 		public async Task<bool> SendMessage(DataBaseWrapper db, User user, Chat chat, string message)
 		{
+			message = message.Replace ("\\", "\\\\");
+			message = message.Replace ("\"", "\\\"");
 			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", \"message\":{{\"conversation\":\"{1}\", \"message\":\"{2}\"}}}}", user.id, chat.conversation, message));
 
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
 			try {
-				EventHandling (db, result);
+				await EventHandling (db, result);
 
 				if (result.ContainsKey ("onMessage")) {
 					return true;
@@ -194,6 +210,88 @@ namespace BlaChat
 			return false;
 		}
 
+		public async Task<bool> SendImage (DataBaseWrapper db, User user, Chat chat, Bitmap bitmap)
+		{
+			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", \"data\":{{\"conversation\":\"{1}\"}}}}", user.id, chat.conversation));
+
+            NameValueCollection nvc = new NameValueCollection();
+            nvc.Add("msg", encodedJson);
+			var tmp = HttpUploadFile (user.server + "/xjcp.php", bitmap, "uploadedfile", "image/png", nvc);
+			if (tmp == null) {
+				return false;
+			}
+			var result = JsonValue.Parse (tmp);
+
+			try {
+				await EventHandling (db, result);
+
+				if (result.ContainsKey ("onMessage")) {
+					return true;
+				}
+			} catch (Exception ex) {
+				Log.Error ("AsyncNetworkError", ex.StackTrace);
+			}
+
+			return false;
+		}
+
+        private String HttpUploadFile(string url, Bitmap img, string paramName, string contentType, NameValueCollection nvc)
+        {
+            string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
+            byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+
+            HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(url);
+            wr.ContentType = "multipart/form-data; boundary=" + boundary;
+            wr.Method = "POST";
+            wr.KeepAlive = true;
+            wr.Credentials = CredentialCache.DefaultCredentials;
+
+            Stream rs = wr.GetRequestStream();
+
+            string formdataTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+            foreach (string key in nvc.Keys)
+            {
+                rs.Write(boundarybytes, 0, boundarybytes.Length);
+                string formitem = string.Format(formdataTemplate, key, nvc[key]);
+                byte[] formitembytes = System.Text.Encoding.UTF8.GetBytes(formitem);
+                rs.Write(formitembytes, 0, formitembytes.Length);
+            }
+            rs.Write(boundarybytes, 0, boundarybytes.Length);
+
+            string headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n";
+			string header = string.Format(headerTemplate, paramName, Guid.NewGuid() + ".png", contentType);
+            byte[] headerbytes = Encoding.UTF8.GetBytes(header);
+            rs.Write(headerbytes, 0, headerbytes.Length);
+
+			img.Compress (Bitmap.CompressFormat.Png, 100, rs);
+
+            byte[] trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+            rs.Write(trailer, 0, trailer.Length);
+            rs.Close();
+
+            WebResponse wresp = null;
+            try
+            {
+                wresp = wr.GetResponse();
+                Stream stream2 = wresp.GetResponseStream();
+                StreamReader reader2 = new StreamReader(stream2);
+				return reader2.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                if (wresp != null)
+                {
+                    wresp.Close();
+                    wresp = null;
+                }
+				return null;
+            }
+            finally
+            {
+                wr = null;
+            }
+        }
+
 		public async Task<bool> UpdateEvents(DataBaseWrapper db, User user)
 		{
 			string encodedJson = escape(String.Format("{{\"id\":\"{0}\"}}", user.id));
@@ -201,7 +299,7 @@ namespace BlaChat
 			var result = JsonValue.Parse(await Download(user.server + "/xjcp.php?msg=" + encodedJson));
 
 			try {
-				EventHandling (db, result);
+				await EventHandling (db, result);
 			} catch (Exception ex) {
 				Log.Error ("AsyncNetworkError", ex.StackTrace);
 			}
@@ -216,7 +314,7 @@ namespace BlaChat
 			var result = JsonValue.Parse(await Download(user.server + "/xjcp.php?msg=" + encodedJson));
 
 			try {
-				EventHandling (db, result);
+				await EventHandling (db, result);
 			} catch (Exception ex) {
 				Log.Error ("AsyncNetworkError", ex.StackTrace);
 			}
@@ -276,7 +374,7 @@ namespace BlaChat
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
 
 			try {
-				EventHandling (db, result);
+				await EventHandling (db, result);
 
 				if (result.ContainsKey ("onGetHistory")) {
 					var arr = result ["onGetHistory"];
@@ -308,7 +406,7 @@ namespace BlaChat
 			return false;
 		}
 
-		private void EventHandling(DataBaseWrapper db, JsonValue result) {
+		private async Task<int> EventHandling(DataBaseWrapper db, JsonValue result) {
 			if (result.ContainsKey ("events")) {
 				JsonArray arr = (JsonArray) result ["events"];
 				foreach (JsonValue v in arr) {
@@ -320,54 +418,18 @@ namespace BlaChat
 					};
 					db.Insert (e);
 				}
+
+				if (backgroundService != null) {
+					await backgroundService.UpdateNotifications();
+				}
 			}
+			return 0;
 		}
 
 
 		private static string escape(string str)
 		{
-			string str2 = "0123456789ABCDEF";
-			int length = str.Length;
-			StringBuilder builder = new StringBuilder(length * 2);
-			int num3 = -1;
-			while (++num3 < length)
-			{
-				char ch = str[num3];
-				int num2 = ch;
-				if ((((0x41 > num2) || (num2 > 90)) &&
-					((0x61 > num2) || (num2 > 0x7a))) &&
-					((0x30 > num2) || (num2 > 0x39)))
-				{
-					switch (ch)
-					{
-					case '@':
-					case '*':
-					case '_':
-					case '+':
-					case '-':
-					case '.':
-					case '/':
-						goto Label_0125;
-					}
-					builder.Append('%');
-					if (num2 < 0x100)
-					{
-						builder.Append(str2[num2 / 0x10]);
-						ch = str2[num2 % 0x10];
-					}
-					else
-					{
-						builder.Append('u');
-						builder.Append(str2[(num2 >> 12) % 0x10]);
-						builder.Append(str2[(num2 >> 8) % 0x10]);
-						builder.Append(str2[(num2 >> 4) % 0x10]);
-						ch = str2[num2 % 0x10];
-					}
-				}
-				Label_0125:
-				builder.Append(ch);
-			}
-			return builder.ToString();
+			return Uri.EscapeDataString (str);
 		}
 	}
 }

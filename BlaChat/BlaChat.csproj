@@ -61,6 +61,7 @@
     <Compile Include="Data\SQLite.cs" />
     <Compile Include="ChatActivity.cs" />
     <Compile Include="ServiceConnection.cs" />
+    <Compile Include="Data\TimeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />
@@ -82,10 +83,13 @@
     <AndroidResource Include="Resources\layout\MessageRight.axml" />
     <AndroidResource Include="Resources\layout\ImageLeft.axml" />
     <AndroidResource Include="Resources\layout\ImageRight.axml" />
+    <AndroidResource Include="Resources\layout\TimeInsert.axml" />
+    <AndroidResource Include="Resources\menu\chat.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Resources\Raw\" />
     <Folder Include="Data\" />
+    <Folder Include="Resources\menu\" />
   </ItemGroup>
 </Project>

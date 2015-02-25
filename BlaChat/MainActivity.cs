@@ -9,6 +9,8 @@ using Android.OS;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Util;
+using System.Collections.Generic;
+using Android.Views.InputMethods;
 
 namespace BlaChat
 {
@@ -35,7 +37,7 @@ namespace BlaChat
 			}
 		}
 
-		public void OnUpdateRequested() {
+		public async void OnUpdateRequested() {
 			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
 				RunOnUiThread (() => ShowChats (user));
@@ -44,12 +46,15 @@ namespace BlaChat
 
 		public void OnBind() {
 			if (service != null) {
+				service.MainActivity = this;
 				service.ResetUpdateInterval ();
+				network.SetBackgroundService (service);
 			}
 		}
 
 		public void OnUnBind() {
 			if (service != null) {
+				service.MainActivity = null;
 				service.ResetUpdateInterval ();
 			}
 		}
@@ -58,7 +63,6 @@ namespace BlaChat
 			base.OnResume ();
 			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
-				await network.UpdateChats (db, user);
 				ShowChats (user);
 			}
 
@@ -110,6 +114,7 @@ namespace BlaChat
 				View v = LayoutInflater.Inflate (Resource.Layout.Chat, null);
 				TextView name = v.FindViewById<TextView>(Resource.Id.chatName);
 				TextView message = v.FindViewById<TextView>(Resource.Id.chatMessage);
+				TextView time = v.FindViewById<TextView>(Resource.Id.chatTime);
 				ImageView image = v.FindViewById<ImageView> (Resource.Id.chatImage);
 
 				new Thread (async () => {
@@ -133,12 +138,22 @@ namespace BlaChat
 				var tmp = db.Table<Message> ().Where (q => q.conversation == elem.conversation).OrderByDescending (q => q.time);
 				var lastMsg = tmp.FirstOrDefault ();
 				if (lastMsg != null) {
-					if (lastMsg.nick != user.user) {
-						message.Text = "> " + lastMsg.text;
+					var escape = lastMsg.text.Replace ("&quot;", "\"");
+					escape = escape.Replace ("&lt;", "<");
+					escape = escape.Replace ("&gt;", ">");
+					escape = escape.Replace ("&amp;", "&");
+					if (lastMsg.nick == user.user) {
+						message.Text = "Du: " + escape;
 					} else {
-						message.Text = lastMsg.text;
+						if (elem.conversation.Split (',').Length == 2 && lastMsg.nick != "watchdog") {
+							message.Text = escape;
+						} else {
+							message.Text = lastMsg.author + ": " + escape;
+						}
 					}
+					time.Text = TimeConverter.AutoConvert(lastMsg.time);
 				} else {
+					time.Text = "";
 					message.Text = "No message";
 				}
 
@@ -158,14 +173,19 @@ namespace BlaChat
 
 			Button login = FindViewById<Button> (Resource.Id.login);
 			login.Click += async delegate {
+
+				InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
+				manager.HideSoftInputFromWindow(FindViewById<EditText> (Resource.Id.username).WindowToken, 0);
+				manager.HideSoftInputFromWindow(FindViewById<EditText> (Resource.Id.password).WindowToken, 0);
+				manager.HideSoftInputFromWindow(FindViewById<EditText> (Resource.Id.server).WindowToken, 0);
+
 				login.Text = "Connecting...";
 				login.Enabled = false;
 
 				var user = new User() {
 					user = FindViewById<EditText> (Resource.Id.username).Text,
 					password = FindViewById<EditText> (Resource.Id.password).Text,
-					server = FindViewById<EditText> (Resource.Id.server).Text != null
-						&& FindViewById<EditText> (Resource.Id.server).Text != "" ?
+					server = !string.IsNullOrEmpty (FindViewById<EditText> (Resource.Id.server).Text) ?
 						FindViewById<EditText> (Resource.Id.server).Text :
 						FindViewById<EditText> (Resource.Id.server).Hint
 				};
@@ -176,8 +196,21 @@ namespace BlaChat
 				}
 
 				if(await network.Authenticate(db, user)) {
-					db.Insert(user);
-					initializeAuthenticated(user);
+					login.Text = "Loading data...";
+					new Thread(async () => {
+						int i = 0;
+						db.Insert(user);
+						await network.UpdateChats (db, user);
+						var x = db.Table<Chat> ();
+						int count = x.Count();
+						var tasks = new List<Task<bool>>();
+						RunOnUiThread(() => initializeAuthenticated(user));
+
+						foreach (var chat in x) {
+							await network.UpdateHistory(db, user, chat, 30);
+							OnUpdateRequested();
+						}
+					}).Start();
 				} else {
 					login.Text = "Retry Login";
 					login.Enabled = true;

@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/messageCaption"
-        android:gravity="right" />
+        android:gravity="right"
+        android:paddingRight="4dp" />
     <TextView
         android:text="Text"
         android:layout_width="match_parent"
@@ -19,5 +20,7 @@
         android:id="@+id/messageText"
         android:gravity="right"
         android:layout_marginBottom="13dp"
-        android:tag="Message Text" />
+        android:tag="Message Text"
+        android:paddingRight="10dp"
+        android:paddingLeft="80dp" />
 </LinearLayout>
