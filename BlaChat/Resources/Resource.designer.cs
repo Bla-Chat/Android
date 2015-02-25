@@ -60,6 +60,12 @@ namespace BlaChat
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f070023
+			public const int action_addFriend = 2131165219;
+			
+			// aapt resource value: 0x7f070022
+			public const int action_createConversation = 2131165218;
+			
 			// aapt resource value: 0x7f07001f
 			public const int action_defaultMessages = 2131165215;
 			
@@ -217,6 +223,9 @@ namespace BlaChat
 			
 			// aapt resource value: 0x7f060000
 			public const int chat = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int main = 2131099649;
 			
 			static Menu()
 			{

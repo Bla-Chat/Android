@@ -1,0 +1,17 @@
+﻿<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Settings"/>
+    <item
+        android:id="@+id/action_createConversation"
+        android:showAsAction="always"
+        android:title="Create Chat"
+        android:titleCondensed="Create" />
+    <item
+        android:id="@+id/action_addFriend"
+        android:showAsAction="ifRoom"
+        android:title="Add Friend" 
+        android:titleCondensed="Add" />
+</menu>    

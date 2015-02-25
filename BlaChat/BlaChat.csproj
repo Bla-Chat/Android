@@ -85,6 +85,7 @@
     <AndroidResource Include="Resources\layout\ImageRight.axml" />
     <AndroidResource Include="Resources\layout\TimeInsert.axml" />
     <AndroidResource Include="Resources\menu\chat.axml" />
+    <AndroidResource Include="Resources\menu\main.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

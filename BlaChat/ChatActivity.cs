@@ -87,6 +87,8 @@ namespace BlaChat
 			if (visibleMessages <= 30) {
 				var item = menu.FindItem (Resource.Id.action_lessMessages);
 				item.SetVisible (false);
+				item = menu.FindItem (Resource.Id.action_defaultMessages);
+				item.SetVisible (false);
 			}
 			return base.OnPrepareOptionsMenu(menu);
 		}

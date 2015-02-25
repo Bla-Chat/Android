@@ -59,6 +59,30 @@ namespace BlaChat
 			}
 		}
 
+		public override bool OnPrepareOptionsMenu(IMenu menu)
+		{
+			menu.Clear ();
+			MenuInflater.Inflate(Resource.Menu.main, menu);
+			return base.OnPrepareOptionsMenu(menu);
+		}
+
+		public override bool OnOptionsItemSelected(IMenuItem item)
+		{
+			switch (item.ItemId)
+			{
+			case Resource.Id.action_addFriend:
+				//do something
+				return true;
+			case Resource.Id.action_createConversation:
+				//do something
+				return true;
+			case Resource.Id.action_settings:
+				//do something
+				return true;
+			}
+			return base.OnOptionsItemSelected(item);
+		}
+
 		protected async override void OnResume() {
 			base.OnResume ();
 			User user = db.Table<User>().FirstOrDefault ();
