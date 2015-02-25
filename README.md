@@ -1,5 +1,7 @@
-Bla-Chat Smartphone APP
-=======================
+Bla-Chat Android App
+====================
+
+<a href="https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true">Download the apk</a>.
 
 A secure and open source smartphone chat application, to give you insight what happens to your data.
 
@@ -10,7 +12,7 @@ Currently the only software implementing this protocol is BlaChatServer (https:/
 
 ## Installation
 
-<a href="https://fuersts.homeip.net/BlaChat.apk">Download</a> the apk.
+<a href="https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true">Download</a> the apk.
 
 Install it. You may need to allow apps from unknown sources in the options of your phone.
 
@@ -22,21 +24,25 @@ It supports:
 
 *Plain text mssages
 
-*Viewing Images send by others
+*Send and view images
 
-*Notifications (Synched across devices)
+*Notifications (synched across devices)
 
-*Groups (with unlimited users)
+*Group conversations
+
+*Browse messages offline
 
 *Encrypted connection
 
-*Any server can be used (username@server for login)
+*Any server can be used
 
 What does not yet work:
 
-*Create Coversations
+*Settings (configure sync, led, vibrate and ringtone)
 
-*Send Images
+*Create coversations
+
+*Add friends
 
 ## Contributing
 
