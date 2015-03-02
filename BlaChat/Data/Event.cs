@@ -12,6 +12,8 @@ namespace BlaChat
 		public string msg { get; set; }
 		public string nick { get; set; }
 		public string text { get; set; }
+		public string time { get; set; }
+		public string author { get; set; }
 
 		public Event ()
 		{

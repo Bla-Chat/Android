@@ -62,7 +62,6 @@ namespace BlaChat
 				if (msg.Equals("")) return;
 
 				string tmp = send.Text;
-				send.Text = "...";
 				send.Enabled = false;
 
 				InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
@@ -73,7 +72,6 @@ namespace BlaChat
 				new Thread(async () => {
 					await network.SendMessage (db, user, chat, msg);
 					RunOnUiThread(() => {
-						send.Text = tmp;
 						send.Enabled = true;
 					});
 				}).Start();
@@ -209,9 +207,10 @@ namespace BlaChat
 		}
 
 		public async void OnUpdateRequested() {
-			User user = db.Table<User>().FirstOrDefault ();
-			if (user != null && user.user != null) {
-				RunOnUiThread(() => UpdateMessagesScrollDown (user));
+			lock (this) {
+				if (user != null && user.user != null) {
+					RunOnUiThread (() => UpdateMessagesScrollDown (user));
+				}
 			}
 		}
 
@@ -233,11 +232,11 @@ namespace BlaChat
 		}
 
 		private void UpdateMessagesScrollDown(User user) {
-			UpdateMessages (user);
+				UpdateMessages (user);
 
-			ScrollView scrollView = FindViewById<ScrollView> (Resource.Id.messageScrollView);
-			scrollView.FullScroll(FocusSearchDirection.Down);
-			scrollView.Post (() => scrollView.FullScroll (FocusSearchDirection.Down));
+				ScrollView scrollView = FindViewById<ScrollView> (Resource.Id.messageScrollView);
+				scrollView.FullScroll (FocusSearchDirection.Down);
+				scrollView.Post (() => scrollView.FullScroll (FocusSearchDirection.Down));
 		}
 
 		private void UpdateMessages(User user) {
@@ -268,18 +267,20 @@ namespace BlaChat
 								var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + elem.nick + ".png");
 								RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
 							} catch (Exception e) {
-								Log.Error("ChatMessageImage", e.StackTrace);
+								Log.Error("BlaChat", e.StackTrace);
 							}
 						}).Start();
 					}
 					ImageView contentImage = v.FindViewById<ImageView> (Resource.Id.contentImage);
+					//contentImage.SetOnTouchListener (new TouchListener(this, elem.text.Substring ("#image ".Length)));
+
 					new Thread (async () => {
 						try {
 							var uri = elem.text.Substring ("#image ".Length);
 							var imageBitmap = await network.GetImageBitmapFromUrl(uri);
 							RunOnUiThread(() => contentImage.SetImageBitmap(imageBitmap));
 						} catch (Exception e) {
-							Log.Error("ChatMessageImage", e.StackTrace);
+							Log.Error("BlaChat", e.StackTrace);
 						}
 					}).Start();
 				} else {
@@ -293,7 +294,7 @@ namespace BlaChat
 								var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + elem.nick + ".png");
 								RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
 							} catch (Exception e) {
-								Log.Error("ChatMessageImage", e.StackTrace);
+								Log.Error("BlaChat", e.StackTrace);
 							}
 						}).Start();
 					}
@@ -314,6 +315,46 @@ namespace BlaChat
 				messageList.AddView(v);
 			}
 			messageList.Post(() => messageList.RequestLayout ());
+		}
+
+		class TouchListener : View.IOnTouchListener {
+			private string filename = "";
+			private Activity activity = null;
+
+			public TouchListener(Activity activity, string url) {
+				string images = System.IO.Path.Combine (Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Pictures/BlaChat");
+				filename = url;
+				filename = filename.Substring (filename.LastIndexOf ("/") + 1);
+				filename = System.IO.Path.Combine (images, filename);
+				this.activity = activity;
+			}
+
+			#region IOnTouchListener implementation
+			public bool OnTouch (View v, MotionEvent e)
+			{
+				switch (e.Action) {
+				case MotionEventActions.Up:
+					Intent intent = new Intent (Intent.ActionView);
+					intent.SetDataAndType (Android.Net.Uri.Parse ("file://" + filename), "image/*");
+					activity.StartActivity (intent);
+					break;
+				}
+				return true;
+			}
+			#endregion
+			#region IDisposable implementation
+			public void Dispose ()
+			{
+				throw new NotImplementedException ();
+			}
+			#endregion
+			#region IJavaObject implementation
+			public IntPtr Handle {
+				get {
+					throw new NotImplementedException ();
+				}
+			}
+			#endregion
 		}
 	}
 }

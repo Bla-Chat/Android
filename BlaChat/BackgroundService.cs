@@ -27,6 +27,7 @@ namespace BlaChat
 		public BackgroundService ()
 		{
 			ResetUpdateInterval ();
+			Mode = 1;
 		}
 
 		public override IBinder OnBind(Intent Intent) {
@@ -34,12 +35,12 @@ namespace BlaChat
 		}
 
 		public void ResetUpdateInterval() {
-			UpdateInterval = 200;
+			UpdateInterval = 1000;
 		}
 
 		public override StartCommandResult OnStartCommand (Android.Content.Intent intent, StartCommandFlags flags, int startId)
 		{
-			Log.Debug ("BackgroundService", "BackgroundService started");
+			Log.Debug ("BlaChat", "BackgroundService started");
 			ResetUpdateInterval ();
 			DoWork ();
 			return StartCommandResult.Sticky;
@@ -59,11 +60,11 @@ namespace BlaChat
 						Thread.Sleep (UpdateInterval * Mode);
 
 						if (UpdateInterval < 2000) {
-							UpdateInterval += 100;
+							UpdateInterval += 200;
 						} else if (UpdateInterval < 10000) {
-							UpdateInterval += 500;
-						} else if (UpdateInterval < 30000) {
 							UpdateInterval += 1000;
+						} else if (UpdateInterval < 30000) {
+							UpdateInterval += 2000;
 						} else if (UpdateInterval < 60000) {
 							UpdateInterval += 6000;
 						} else if (UpdateInterval < 120000) {
@@ -90,23 +91,36 @@ namespace BlaChat
 		}
 
 		private async Task<int> HandleEvent(DataBaseWrapper db, AsyncNetwork network, User user, Event e) {
-			if (e.type == "onMessage") {
-				await network.UpdateChats (db, user);
-				var chat = db.Get<Chat> (e.msg);
-				await network.UpdateHistory (db, user, chat, 10);
+			if (e.type != "onMessage") {
+				return 0;
 			}
+			var chat = db.Get<Chat> (e.msg);
+			if (chat == null) {
+				await network.UpdateChats (db, user);
+				chat = db.Get<Chat> (e.msg);
+			}
+			chat.time = e.time;
+			db.Update (chat);
+
+			var msg = new Message ();
+			msg.conversation = chat.conversation;
+			msg.author = e.author;
+			msg.nick = e.nick;
+			msg.text = e.text;
+			msg.time = e.time;
+			db.Insert (msg);
+
+			ResetUpdateInterval ();
 			if (e.msg != ActiveConversation) {
 				if (user.user != e.nick) {
 					await Notify (network, e.nick, e.text);
 				}
 			}
-			if (MainActivity != null) {
-				MainActivity.OnUpdateRequested ();
-			}
 			if (ChatActivity != null) {
 				ChatActivity.OnUpdateRequested ();
+			} else if (MainActivity != null) {
+				MainActivity.OnUpdateRequested ();
 			}
-			ResetUpdateInterval ();
 			return 0;
 		}
 

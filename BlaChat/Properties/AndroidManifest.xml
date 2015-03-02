@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.5" package="BlaChat.BlaChat" android:versionCode="6">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.7" package="BlaChat.BlaChat" android:versionCode="10">
 	<uses-sdk android:minSdkVersion="10" android:targetSdkVersion="19" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<application android:label="BlaChat" android:icon="@drawable/icon">
 		<service android:name="BackgroundService"></service>
 		<receiver android:name="blachat.BootReceiver" android:enabled="true" android:exported="false" android:label="BootHandler">

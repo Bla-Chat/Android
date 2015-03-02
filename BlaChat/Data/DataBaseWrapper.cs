@@ -74,7 +74,7 @@ namespace BlaChat
 				try {
 					db.CreateTable<T> ();
 				} catch(SQLiteException e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 				}
 			}
 		}
@@ -84,7 +84,7 @@ namespace BlaChat
 				try {
 					db.Insert (elem);
 				} catch(SQLiteException e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 				}
 			}
 		}
@@ -94,7 +94,7 @@ namespace BlaChat
 				try {
 					db.Update (elem);
 				} catch(SQLiteException e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 				}
 			}
 		}
@@ -104,7 +104,7 @@ namespace BlaChat
 				try {
 					return db.Get<T> (primaryKeyId);
 				} catch(Exception e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 					return default(T);
 				}
 			}
@@ -115,7 +115,7 @@ namespace BlaChat
 				try {
 					return db.Query<T>(query, args);
 				} catch(Exception e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 					return null;
 				}
 			}
@@ -126,7 +126,7 @@ namespace BlaChat
 				try {
 					return db.Delete<T> (primaryKeyId);
 				} catch(SQLiteException e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 					return 0;
 				}
 			}
@@ -137,7 +137,7 @@ namespace BlaChat
 				try {
 					return db.Table<T>();
 				} catch(SQLiteException e) {
-					Log.Error("DataBaseException", e.StackTrace);
+					Log.Error("BlaChat", e.StackTrace);
 					return null;
 				}
 			}

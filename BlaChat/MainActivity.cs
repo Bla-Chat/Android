@@ -154,7 +154,7 @@ namespace BlaChat
 						var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + conv + ".png");
 						RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
 					} catch (Exception e) {
-						Log.Error("ChatMessageImage", e.StackTrace);
+						Log.Error("BlaChat", e.StackTrace);
 					}
 				}).Start();
 
