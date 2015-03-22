@@ -58,14 +58,17 @@ namespace BlaChat
 			var lightTheme = FindViewById<RadioButton> (Resource.Id.lighttheme);
 			var darkTheme = FindViewById<RadioButton> (Resource.Id.darktheme);
 			var materialTheme = FindViewById<RadioButton> (Resource.Id.materialtheme);
+			var materialThemeDark = FindViewById<RadioButton> (Resource.Id.materialthemeDark);
 
 			lightTheme.Checked = setting.Theme == Android.Resource.Style.ThemeHoloLight;
 			darkTheme.Checked = setting.Theme == Android.Resource.Style.ThemeHolo;
 			materialTheme.Checked = setting.Theme == Android.Resource.Style.ThemeMaterialLight;
+			materialThemeDark.Checked = setting.Theme == Android.Resource.Style.ThemeMaterial;
 
 			lightTheme.CheckedChange += delegate { if (lightTheme.Checked) {setting.Theme = Android.Resource.Style.ThemeHoloLight; db.Update(setting); } };
 			darkTheme.CheckedChange += delegate { if (darkTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeHolo; db.Update(setting); }};
 			materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterialLight; db.Update(setting); }};
+			materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterial; db.Update(setting); }};
 
 			var notifications = FindViewById<CheckBox> (Resource.Id.notifications);
 			var vibrate = FindViewById<CheckBox> (Resource.Id.vibrate);

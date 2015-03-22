@@ -65,9 +65,15 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Material Theme"
+                    android:text="Material Theme (Light)"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:id="@+id/materialtheme" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Material Theme (Dark)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/materialthemeDark" />
             </RadioGroup>
             <TextView
                 android:text="Notifications"
