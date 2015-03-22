@@ -22,5 +22,7 @@
         android:layout_marginBottom="13dp"
         android:tag="Message Text"
         android:paddingRight="10dp"
-        android:paddingLeft="80dp" />
+        android:paddingLeft="80dp"
+        android:textIsSelectable="true"
+        android:autoLink="all" />
 </LinearLayout>
