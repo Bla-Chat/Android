@@ -288,6 +288,15 @@ namespace BlaChat
 						}).Start();
 					}
 					ImageView contentImage = v.FindViewById<ImageView> (Resource.Id.contentImage);
+					contentImage.Click += delegate {
+						string images = System.IO.Path.Combine (Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Pictures/BlaChat");
+						var filename = elem.text.Substring ("#image ".Length);
+						filename = filename.Substring (filename.LastIndexOf ("/") + 1);
+						filename = System.IO.Path.Combine (images, filename);
+						Intent intent = new Intent (Intent.ActionView);
+						intent.SetDataAndType (Android.Net.Uri.Parse ("file://" + filename), "image/*");
+						StartActivity (intent);
+					};
 					//contentImage.SetOnTouchListener (new TouchListener(this, elem.text.Substring ("#image ".Length)));
 
 					new Thread (async () => {
@@ -339,46 +348,6 @@ namespace BlaChat
 				messageList.AddView(v);
 			}
 			messageList.Post(() => messageList.RequestLayout ());
-		}
-
-		class TouchListener : View.IOnTouchListener {
-			private string filename = "";
-			private Activity activity = null;
-
-			public TouchListener(Activity activity, string url) {
-				string images = System.IO.Path.Combine (Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Pictures/BlaChat");
-				filename = url;
-				filename = filename.Substring (filename.LastIndexOf ("/") + 1);
-				filename = System.IO.Path.Combine (images, filename);
-				this.activity = activity;
-			}
-
-			#region IOnTouchListener implementation
-			public bool OnTouch (View v, MotionEvent e)
-			{
-				switch (e.Action) {
-				case MotionEventActions.Up:
-					Intent intent = new Intent (Intent.ActionView);
-					intent.SetDataAndType (Android.Net.Uri.Parse ("file://" + filename), "image/*");
-					activity.StartActivity (intent);
-					break;
-				}
-				return true;
-			}
-			#endregion
-			#region IDisposable implementation
-			public void Dispose ()
-			{
-				throw new NotImplementedException ();
-			}
-			#endregion
-			#region IJavaObject implementation
-			public IntPtr Handle {
-				get {
-					throw new NotImplementedException ();
-				}
-			}
-			#endregion
 		}
 	}
 }
