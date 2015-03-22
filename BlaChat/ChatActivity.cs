@@ -35,12 +35,16 @@ namespace BlaChat
 		private List<Message> displayedMessages = new List<Message> ();
 		private Chat chat;
 		private User user;
+		Setting setting = null;
 
 		protected override void OnCreate (Bundle bundle)
 		{
-			base.OnCreate (bundle);
-
 			db = new DataBaseWrapper (this.Resources);
+			if ((setting = db.Table<Setting> ().FirstOrDefault ()) == null) {
+				db.Insert(setting = new Setting ());
+			}
+			SetTheme (setting.Theme);
+			base.OnCreate (bundle);
 
 			SetContentView (Resource.Layout.ChatActivity);
 
@@ -114,7 +118,7 @@ namespace BlaChat
 				//do something
 				return true;
 			case Resource.Id.action_settings:
-				//do something
+				StartActivity (new Intent (this, typeof(SettingsActivity)));
 				return true;
 			}
 			return base.OnOptionsItemSelected(item);
@@ -249,7 +253,11 @@ namespace BlaChat
 				if (!elem.time.StartsWith (prevDate)) {
 					prevDate = TimeConverter.Convert (elem.time, "yyyy-MM-dd");
 					View timeInsert;
-					timeInsert = LayoutInflater.Inflate (Resource.Layout.TimeInsert, null);
+					if (setting.FontSize == Setting.Size.large) {
+						timeInsert = LayoutInflater.Inflate (Resource.Layout.TimeInsertLarge, null);
+					} else {
+						timeInsert = LayoutInflater.Inflate (Resource.Layout.TimeInsert, null);
+					}
 					TextView text = timeInsert.FindViewById<TextView> (Resource.Id.timeInsertTime);
 					text.Text = TimeConverter.AutoConvertDate (elem.time);
 					messageList.AddView(timeInsert);
@@ -258,9 +266,17 @@ namespace BlaChat
 				View v = null;
 				if (elem.text.StartsWith ("#image")) {
 					if (elem.nick == user.user) {
-						v = LayoutInflater.Inflate (Resource.Layout.ImageRight, null);
+						if (setting.FontSize == Setting.Size.large) {
+							v = LayoutInflater.Inflate (Resource.Layout.ImageRightLarge, null);
+						} else {
+							v = LayoutInflater.Inflate (Resource.Layout.ImageRight, null);
+						}
 					} else {
-						v = LayoutInflater.Inflate (Resource.Layout.ImageLeft, null);
+						if (setting.FontSize == Setting.Size.large) {
+							v = LayoutInflater.Inflate (Resource.Layout.ImageLeftLarge, null);
+						} else {
+							v = LayoutInflater.Inflate (Resource.Layout.ImageLeft, null);
+						}
 						ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
 						new Thread (async () => {
 							try {
@@ -285,9 +301,17 @@ namespace BlaChat
 					}).Start();
 				} else {
 					if (elem.nick == user.user) {
-						v = LayoutInflater.Inflate (Resource.Layout.MessageRight, null);
+						if (setting.FontSize == Setting.Size.large) {
+							v = LayoutInflater.Inflate (Resource.Layout.MessageRightLarge, null);
+						} else {
+							v = LayoutInflater.Inflate (Resource.Layout.MessageRight, null);
+						}
 					} else {
-						v = LayoutInflater.Inflate (Resource.Layout.MessageLeft, null);
+						if (setting.FontSize == Setting.Size.large) {
+							v = LayoutInflater.Inflate (Resource.Layout.MessageLeftLarge, null);
+						} else {
+							v = LayoutInflater.Inflate (Resource.Layout.MessageLeft, null);
+						}
 						ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
 						new Thread (async () => {
 							try {

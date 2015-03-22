@@ -7,6 +7,7 @@ using Android.OS;
 using System.Threading.Tasks;
 using Android.Support.V4.App;
 using Android.Media;
+using Android.Net;
 
 
 namespace BlaChat
@@ -23,11 +24,11 @@ namespace BlaChat
 		private AsyncNetwork network = null;
 		private User user = null;
 		private int UpdateInterval = 10000;
+		private int connectivityMode = 1;
 
 		public BackgroundService ()
 		{
 			ResetUpdateInterval ();
-			Mode = 1;
 		}
 
 		public override IBinder OnBind(Intent Intent) {
@@ -38,7 +39,7 @@ namespace BlaChat
 			UpdateInterval = 1000;
 		}
 
-		public override StartCommandResult OnStartCommand (Android.Content.Intent intent, StartCommandFlags flags, int startId)
+		public override StartCommandResult OnStartCommand (Intent intent, StartCommandFlags flags, int startId)
 		{
 			Log.Debug ("BlaChat", "BackgroundService started");
 			ResetUpdateInterval ();
@@ -52,23 +53,47 @@ namespace BlaChat
 			network = new AsyncNetwork ();
 			network.SetBackgroundService (this);
 			user = db.Table<User>().FirstOrDefault ();
+			var connectivityManager = (ConnectivityManager)GetSystemService(ConnectivityService);
 
 			if (user != null && user.user != null) {
 				var t = new Thread (async () => {
 					while (true) {
-						await network.UpdateEvents (db, user);
-						Thread.Sleep (UpdateInterval * Mode);
+						Setting.Frequency f = db.Table<Setting>().FirstOrDefault().Synchronisation;
+						if (f != Setting.Frequency.wlan || connectivityManager.GetNetworkInfo(ConnectivityType.Wifi).GetState() == NetworkInfo.State.Connected) {
+							await network.UpdateEvents (db, user);
+						}
 
-						if (UpdateInterval < 2000) {
-							UpdateInterval += 200;
-						} else if (UpdateInterval < 10000) {
+						// Wifi connection gets normal updates, other networks get 4 times worse update time.
+						if (connectivityManager.GetNetworkInfo(ConnectivityType.Wifi).GetState() == NetworkInfo.State.Connected)
+						{
+							connectivityMode = 1;
+						} else {
+							connectivityMode = 4;
+						}
+
+						switch(f) {
+						case Setting.Frequency.often:
+							Mode = 1;
+							break;
+						case Setting.Frequency.normal:
+							Mode = 2;
+							break;
+						case Setting.Frequency.rare:
+							Mode = 4;
+							break;
+						case Setting.Frequency.wlan:
+							Mode = 2;
+							break;
+						}
+
+						Thread.Sleep (UpdateInterval * Mode* connectivityMode);
+
+						if (UpdateInterval < 12000) {
 							UpdateInterval += 1000;
 						} else if (UpdateInterval < 30000) {
 							UpdateInterval += 2000;
-						} else if (UpdateInterval < 60000) {
-							UpdateInterval += 6000;
-						} else if (UpdateInterval < 120000) {
-							UpdateInterval += 10000;
+						} else {
+							UpdateInterval = 120000;
 						}
 					}
 				}
@@ -125,6 +150,11 @@ namespace BlaChat
 		}
 
 		private async Task<int> Notify(AsyncNetwork network, string title, string message) {
+			Setting setting = db.Table<Setting> ().FirstOrDefault ();
+
+			if (!setting.Notifications)
+				return 0;
+
 			// Set up an intent so that tapping the notifications returns to this app:
 			Intent intent = new Intent (this, typeof(MainActivity));
 
@@ -141,12 +171,17 @@ namespace BlaChat
 				.SetContentTitle (title)
 				.SetContentText (msg)
 				.SetAutoCancel (true)
-				.SetSound (RingtoneManager.GetDefaultUri (RingtoneType.Notification))
 				.SetSmallIcon (Resource.Drawable.Icon);
+
+			if (setting.Sound) {
+				builder.SetSound (RingtoneManager.GetDefaultUri (RingtoneType.Notification));
+			}
 				
 
 			if ((int)Android.OS.Build.VERSION.SdkInt >= 14) {
-				builder.SetLights(Android.Graphics.Color.Magenta , 500, 500);
+				if (setting.Led) {
+					builder.SetLights (Android.Graphics.Color.Magenta, 500, 500);
+				}
 				if (message.StartsWith ("#image")) {
 					// Instantiate the Image (Big Picture) style:
 					NotificationCompat.BigPictureStyle picStyle = new NotificationCompat.BigPictureStyle ();
@@ -182,8 +217,10 @@ namespace BlaChat
 			const int notificationId = 0;
 			notificationManager.Notify (notificationId, notification);
 
-			Vibrator v = (Vibrator) GetSystemService(Context.VibratorService); // Make phone vibrate
-			v.Vibrate(300);
+			if (setting.Vibrate) {
+				Vibrator v = (Vibrator)GetSystemService (Context.VibratorService); // Make phone vibrate
+				v.Vibrate (300);
+			}
 
 			return notificationId;
 		}

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="64.0dp"
+        android:id="@+id/chatRow"
+        android:tag="ChatRow">
+        <ImageView
+            android:src="@android:drawable/ic_menu_gallery"
+            android:layout_width="60.0dp"
+            android:layout_height="60.0dp"
+            android:id="@+id/chatImage"
+            android:adjustViewBounds="true"
+            android:tag="Image"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="2dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/chatLayout"
+            android:tag="Chat Layout">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="6dp"
+                android:paddingRight="4dp">
+                <TextView
+                    android:text="Chat Name"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/chatName"
+                    android:hint="Chat Name"
+                    android:tag="Chat Name"
+                    android:singleLine="true"
+                    android:paddingLeft="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:text="Time"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/chatTime"
+                    android:gravity="end"
+                    android:paddingRight="4dp" />
+            </LinearLayout>
+            <TextView
+                android:text="Last Chat Message"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/chatMessage"
+                android:tag="Chat Message"
+                android:hint="Last Chat Message"
+                android:minLines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:paddingLeft="16dp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

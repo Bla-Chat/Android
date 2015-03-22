@@ -21,12 +21,17 @@ namespace BlaChat
 		private AsyncNetwork network = new AsyncNetwork();
 		private DataBaseWrapper db = null;
 		private ServiceConnection serviceConnection = null;
+		Setting setting = null;
 
 		protected override void OnCreate (Bundle bundle)
 		{
+			db = new DataBaseWrapper (this.Resources);
+			if ((setting = db.Table<Setting> ().FirstOrDefault ()) == null) {
+				db.Insert(setting = new Setting ());
+			}
+			SetTheme (setting.Theme);
 			base.OnCreate (bundle);
 
-			db = new DataBaseWrapper (this.Resources);
 
 			// Check if the application knows a user.
 			User user = db.Table<User>().FirstOrDefault ();
@@ -77,7 +82,7 @@ namespace BlaChat
 				//do something
 				return true;
 			case Resource.Id.action_settings:
-				//do something
+				StartActivity (new Intent (this, typeof(SettingsActivity)));
 				return true;
 			}
 			return base.OnOptionsItemSelected(item);
@@ -135,7 +140,12 @@ namespace BlaChat
 			LinearLayout chatList = FindViewById<LinearLayout> (Resource.Id.chatList);
 			chatList.RemoveAllViews ();
 			foreach (var elem in x.OrderByDescending(e => e.time)) {
-				View v = LayoutInflater.Inflate (Resource.Layout.Chat, null);
+				View v;
+				if (setting.FontSize == Setting.Size.large) {
+					v = LayoutInflater.Inflate (Resource.Layout.ChatLarge, null);
+				} else {
+					v = LayoutInflater.Inflate (Resource.Layout.Chat, null);
+				}
 				TextView name = v.FindViewById<TextView>(Resource.Id.chatName);
 				TextView message = v.FindViewById<TextView>(Resource.Id.chatMessage);
 				TextView time = v.FindViewById<TextView>(Resource.Id.chatTime);

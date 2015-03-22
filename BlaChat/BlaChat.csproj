@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <DebugType>full</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -62,6 +63,8 @@
     <Compile Include="ChatActivity.cs" />
     <Compile Include="ServiceConnection.cs" />
     <Compile Include="Data\TimeConverter.cs" />
+    <Compile Include="SettingsActivity.cs" />
+    <Compile Include="Data\Setting.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />
@@ -86,6 +89,14 @@
     <AndroidResource Include="Resources\layout\TimeInsert.axml" />
     <AndroidResource Include="Resources\menu\chat.axml" />
     <AndroidResource Include="Resources\menu\main.axml" />
+    <AndroidResource Include="Resources\layout\Settings.axml" />
+    <AndroidResource Include="Resources\layout\ChatLarge.axml" />
+    <AndroidResource Include="Resources\layout\ImageLeftLarge.axml" />
+    <AndroidResource Include="Resources\layout\ImageRightLarge.axml" />
+    <AndroidResource Include="Resources\layout\MessageLeftLarge.axml" />
+    <AndroidResource Include="Resources\layout\MessageRightLarge.axml" />
+    <AndroidResource Include="Resources\layout\SettingsLarge.axml" />
+    <AndroidResource Include="Resources\layout\TimeInsertLarge.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

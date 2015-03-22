@@ -38,6 +38,7 @@ namespace BlaChat
 			db.CreateTable<Message> ();
 			db.CreateTable<Contact> ();
 			db.CreateTable<Chat> ();
+			db.CreateTable<Setting> ();
 		}
 
 		private static void TryInit (Resources resources, string sqliteFilename) {
