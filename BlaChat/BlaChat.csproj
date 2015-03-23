@@ -65,6 +65,7 @@
     <Compile Include="Data\TimeConverter.cs" />
     <Compile Include="SettingsActivity.cs" />
     <Compile Include="Data\Setting.cs" />
+    <Compile Include="ShareActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

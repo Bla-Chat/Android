@@ -62,13 +62,18 @@ namespace BlaChat
 
 			lightTheme.Checked = setting.Theme == Android.Resource.Style.ThemeHoloLight;
 			darkTheme.Checked = setting.Theme == Android.Resource.Style.ThemeHolo;
-			materialTheme.Checked = setting.Theme == Android.Resource.Style.ThemeMaterialLight;
-			materialThemeDark.Checked = setting.Theme == Android.Resource.Style.ThemeMaterial;
-
 			lightTheme.CheckedChange += delegate { if (lightTheme.Checked) {setting.Theme = Android.Resource.Style.ThemeHoloLight; db.Update(setting); } };
 			darkTheme.CheckedChange += delegate { if (darkTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeHolo; db.Update(setting); }};
-			materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterialLight; db.Update(setting); }};
-			materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterial; db.Update(setting); }};
+
+			if ((int)Android.OS.Build.VERSION.SdkInt >= 21) {
+				materialTheme.Checked = setting.Theme == Android.Resource.Style.ThemeMaterialLight;
+				materialThemeDark.Checked = setting.Theme == Android.Resource.Style.ThemeMaterial;
+				materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterialLight; db.Update(setting); }};
+				materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterial; db.Update(setting); }};
+			} else {
+				materialTheme.Visibility = ViewStates.Gone;
+				materialThemeDark.Visibility = ViewStates.Gone;
+			}
 
 			var notifications = FindViewById<CheckBox> (Resource.Id.notifications);
 			var vibrate = FindViewById<CheckBox> (Resource.Id.vibrate);

@@ -221,7 +221,7 @@ namespace BlaChat
 			try {
 				await EventHandling (db, result);
 
-				if (result.ContainsKey ("onMessage")) {
+				if (result.ContainsKey ("onData")) {
 					return true;
 				}
 			} catch (Exception ex) {
