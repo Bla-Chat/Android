@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- the theme applied to the application or activity -->
+    <style name="DarkHolo"
+           parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/DarkHoloBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="DarkHoloBar"
+           parent="@style/android:Widget.Holo.ActionBar.Solid">
+        <item name="android:background">#5D085D</item>
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="LightHolo"
+           parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/LightHoloBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="LightHoloBar"
+           parent="@style/android:Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">#C17BC1</item>
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="DarkMaterial" parent="android:Theme.Material">
+        <item name="android:colorPrimary">#670E67</item>
+        <item name="android:colorPrimaryDark">#310031</item>
+        <item name="android:navigationBarColor">#670E67</item>
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="LightMaterial" parent="android:Theme.Material.Light">
+        <item name="android:navigationBarColor">#C17BC1</item>
+        <item name="android:colorPrimaryDark">#5D085D</item>
+        <item name="android:colorPrimary">#C17BC1</item>
+    </style>
+</resources>

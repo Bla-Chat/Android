@@ -99,6 +99,7 @@
     <AndroidResource Include="Resources\layout\MessageRightLarge.axml" />
     <AndroidResource Include="Resources\layout\SettingsLarge.axml" />
     <AndroidResource Include="Resources\layout\TimeInsertLarge.axml" />
+    <AndroidResource Include="Resources\values\Themes.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

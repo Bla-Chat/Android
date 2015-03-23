@@ -60,16 +60,16 @@ namespace BlaChat
 			var materialTheme = FindViewById<RadioButton> (Resource.Id.materialtheme);
 			var materialThemeDark = FindViewById<RadioButton> (Resource.Id.materialthemeDark);
 
-			lightTheme.Checked = setting.Theme == Android.Resource.Style.ThemeHoloLight;
-			darkTheme.Checked = setting.Theme == Android.Resource.Style.ThemeHolo;
-			lightTheme.CheckedChange += delegate { if (lightTheme.Checked) {setting.Theme = Android.Resource.Style.ThemeHoloLight; db.Update(setting); } };
-			darkTheme.CheckedChange += delegate { if (darkTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeHolo; db.Update(setting); }};
+			lightTheme.Checked = setting.Theme == Resource.Style.LightHolo;
+			darkTheme.Checked = setting.Theme == Resource.Style.DarkHolo;
+			lightTheme.CheckedChange += delegate { if (lightTheme.Checked) {setting.Theme = Resource.Style.LightHolo; db.Update(setting); } };
+			darkTheme.CheckedChange += delegate { if (darkTheme.Checked) { setting.Theme = Resource.Style.DarkHolo; db.Update(setting); }};
 
 			if ((int)Android.OS.Build.VERSION.SdkInt >= 21) {
-				materialTheme.Checked = setting.Theme == Android.Resource.Style.ThemeMaterialLight;
-				materialThemeDark.Checked = setting.Theme == Android.Resource.Style.ThemeMaterial;
-				materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterialLight; db.Update(setting); }};
-				materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Android.Resource.Style.ThemeMaterial; db.Update(setting); }};
+				materialTheme.Checked = setting.Theme == Resource.Style.LightMaterial;
+				materialThemeDark.Checked = setting.Theme == Resource.Style.DarkMaterial;
+				materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Resource.Style.LightMaterial; db.Update(setting); }};
+				materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Resource.Style.DarkMaterial; db.Update(setting); }};
 			} else {
 				materialTheme.Visibility = ViewStates.Gone;
 				materialThemeDark.Visibility = ViewStates.Gone;
