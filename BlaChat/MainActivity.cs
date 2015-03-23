@@ -32,6 +32,7 @@ namespace BlaChat
 			SetTheme (setting.Theme);
 			base.OnCreate (bundle);
 
+			new UpdateChecker (this, db, setting);
 
 			// Check if the application knows a user.
 			User user = db.Table<User>().FirstOrDefault ();

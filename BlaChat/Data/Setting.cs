@@ -6,6 +6,8 @@ namespace BlaChat
 	[Table("Settings")]
 	public class Setting
 	{
+		public const string CurrentVersion = "2.2";
+
 		public enum Size { large, medium, small };
 		public enum Frequency { often, normal, rare, wlan }
 
@@ -23,6 +25,9 @@ namespace BlaChat
 
 		public Frequency Synchronisation { get; set; }
 
+		public string NewestVersion { get; set; }
+
+
 		public Setting ()
 		{
 			Theme = Android.Resource.Style.ThemeHoloLight;
@@ -32,6 +37,7 @@ namespace BlaChat
 			Sound = true;
 			Led = true;
 			Synchronisation = Frequency.normal;
+			NewestVersion = CurrentVersion;
 		}
 	}
 }

@@ -66,6 +66,7 @@
     <Compile Include="SettingsActivity.cs" />
     <Compile Include="Data\Setting.cs" />
     <Compile Include="ShareActivity.cs" />
+    <Compile Include="UpdateChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

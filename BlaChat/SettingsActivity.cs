@@ -104,6 +104,16 @@ namespace BlaChat
 			normalSync.CheckedChange += delegate { if (normalSync.Checked) {setting.Synchronisation = Setting.Frequency.normal; db.Update(setting); } };
 			lowSync.CheckedChange += delegate { if (lowSync.Checked) {setting.Synchronisation = Setting.Frequency.rare; db.Update(setting); } };
 			wlanSync.CheckedChange += delegate { if (wlanSync.Checked) {setting.Synchronisation = Setting.Frequency.wlan; db.Update(setting); } };
+
+			var currentVersion = FindViewById<TextView> (Resource.Id.version);
+			var newestVersion = FindViewById<TextView> (Resource.Id.newestVersion);
+
+			currentVersion.Text = Setting.CurrentVersion;
+			if (setting.NewestVersion != null && !setting.NewestVersion.StartsWith (Setting.CurrentVersion)) {
+				newestVersion.Text = setting.NewestVersion;
+			} else {
+				newestVersion.Text = Setting.CurrentVersion;
+			}
 		}
 	}
 }

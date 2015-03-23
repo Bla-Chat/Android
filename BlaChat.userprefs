@@ -1,14 +1,14 @@
 ﻿<Properties StartupItem="BlaChat\BlaChat.csproj" GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.036e138513ad470a" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\ShareActivity.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.Nexus 5 (KitKat)" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\Data\Setting.cs">
     <Files>
-      <File FileName="BlaChat\SettingsActivity.cs" Line="48" Column="48" />
-      <File FileName="BlaChat\MainActivity.cs" Line="4" Column="4" />
+      <File FileName="BlaChat\SettingsActivity.cs" Line="4" Column="4" />
+      <File FileName="BlaChat\MainActivity.cs" Line="1" Column="1" />
       <File FileName="BlaChat\ChatActivity.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\Data\Setting.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\BackgroundService.cs" Line="4" Column="4" />
-      <File FileName="BlaChat\ShareActivity.cs" Line="6" Column="6" />
-      <File FileName="BlaChat\BootReceiver.cs" Line="2" Column="2" />
+      <File FileName="BlaChat\Data\Setting.cs" Line="25" Column="25" />
+      <File FileName="BlaChat\BackgroundService.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\ShareActivity.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\BootReceiver.cs" Line="1" Column="1" />
       <File FileName="BlaChat\Properties\AndroidManifest.xml" Line="12" Column="12" />
       <File FileName="c:\Users\Michael\Documents\Projects\bla-chat\bla-chat-smartphone\BlaChat\Data\AsyncNetwork.cs" Line="1" Column="1" />
     </Files>

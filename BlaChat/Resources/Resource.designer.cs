@@ -60,32 +60,32 @@ namespace BlaChat
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f070041
-			public const int action_addFriend = 2131165249;
+			// aapt resource value: 0x7f070043
+			public const int action_addFriend = 2131165251;
 			
-			// aapt resource value: 0x7f070040
-			public const int action_createConversation = 2131165248;
-			
-			// aapt resource value: 0x7f07003d
-			public const int action_defaultMessages = 2131165245;
-			
-			// aapt resource value: 0x7f07003c
-			public const int action_lessMessages = 2131165244;
-			
-			// aapt resource value: 0x7f07003b
-			public const int action_moreMessages = 2131165243;
-			
-			// aapt resource value: 0x7f07003e
-			public const int action_rename = 2131165246;
-			
-			// aapt resource value: 0x7f070039
-			public const int action_sendImage = 2131165241;
+			// aapt resource value: 0x7f070042
+			public const int action_createConversation = 2131165250;
 			
 			// aapt resource value: 0x7f07003f
-			public const int action_setImage = 2131165247;
+			public const int action_defaultMessages = 2131165247;
 			
-			// aapt resource value: 0x7f07003a
-			public const int action_settings = 2131165242;
+			// aapt resource value: 0x7f07003e
+			public const int action_lessMessages = 2131165246;
+			
+			// aapt resource value: 0x7f07003d
+			public const int action_moreMessages = 2131165245;
+			
+			// aapt resource value: 0x7f070040
+			public const int action_rename = 2131165248;
+			
+			// aapt resource value: 0x7f07003b
+			public const int action_sendImage = 2131165243;
+			
+			// aapt resource value: 0x7f070041
+			public const int action_setImage = 2131165249;
+			
+			// aapt resource value: 0x7f07003c
+			public const int action_settings = 2131165244;
 			
 			// aapt resource value: 0x7f070035
 			public const int changeProfile = 2131165237;
@@ -180,6 +180,9 @@ namespace BlaChat
 			// aapt resource value: 0x7f07002a
 			public const int network = 2131165226;
 			
+			// aapt resource value: 0x7f070039
+			public const int newestVersion = 2131165241;
+			
 			// aapt resource value: 0x7f07002c
 			public const int normalsync = 2131165228;
 			
@@ -243,14 +246,17 @@ namespace BlaChat
 			// aapt resource value: 0x7f07001f
 			public const int themes = 2131165215;
 			
-			// aapt resource value: 0x7f070038
-			public const int timeInsertTime = 2131165240;
+			// aapt resource value: 0x7f07003a
+			public const int timeInsertTime = 2131165242;
 			
 			// aapt resource value: 0x7f070001
 			public const int username = 2131165185;
 			
 			// aapt resource value: 0x7f070000
 			public const int usernameLabel = 2131165184;
+			
+			// aapt resource value: 0x7f070038
+			public const int version = 2131165240;
 			
 			// aapt resource value: 0x7f070026
 			public const int vibrate = 2131165222;

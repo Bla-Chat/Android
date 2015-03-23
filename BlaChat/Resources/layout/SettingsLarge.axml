@@ -48,7 +48,8 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/themes">
+                android:id="@+id/themes"
+                android:layout_marginTop="8.4dp">
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +81,8 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/textView2" />
+                android:id="@+id/textView2"
+                android:layout_marginTop="8.4dp" />
             <CheckBox
                 android:text="Notifications"
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -110,7 +112,8 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView9" />
+                android:id="@+id/textView9"
+                android:layout_marginTop="8.4dp" />
             <RadioGroup
                 android:minWidth="25px"
                 android:minHeight="25px"
@@ -148,14 +151,15 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
+                android:id="@+id/textView3"
+                android:layout_marginTop="8.4dp" />
             <TextView
                 android:text="Server"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView5"
-                android:layout_marginTop="9.8dp" />
+                android:layout_marginTop="8.4dp" />
             <TextView
                 android:text="https://www.ssl-id.de/bla.f-online.net/api"
                 android:textAppearance="?android:attr/textAppearanceLarge"
@@ -209,6 +213,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
+            <TextView
+                android:text="Updates"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView3"
+                android:layout_marginTop="8.4dp" />
+            <TextView
+                android:text="Current Version"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView8"
+                android:layout_marginTop="8.4dp" />
+            <TextView
+                android:text="0.0.0.0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/version" />
+            <TextView
+                android:text="Newest Version"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView8"
+                android:layout_marginTop="8.4dp" />
+            <TextView
+                android:text="0.0.0.0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/newestVersion"
+                android:autoLink="web" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
