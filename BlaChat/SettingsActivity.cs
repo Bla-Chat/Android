@@ -105,6 +105,11 @@ namespace BlaChat
 			lowSync.CheckedChange += delegate { if (lowSync.Checked) {setting.Synchronisation = Setting.Frequency.rare; db.Update(setting); } };
 			wlanSync.CheckedChange += delegate { if (wlanSync.Checked) {setting.Synchronisation = Setting.Frequency.wlan; db.Update(setting); } };
 
+			var server = FindViewById<TextView> (Resource.Id.server);
+			var nickname = FindViewById<TextView> (Resource.Id.nickname);
+			server.Text = user.server;
+			nickname.Text = user.user;
+
 			var currentVersion = FindViewById<TextView> (Resource.Id.version);
 			var newestVersion = FindViewById<TextView> (Resource.Id.newestVersion);
 

@@ -1,1 +1,2 @@
-2.2 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
+2.3 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
+* show server and nickname in settings

@@ -183,6 +183,9 @@ namespace BlaChat
 			// aapt resource value: 0x7f070039
 			public const int newestVersion = 2131165241;
 			
+			// aapt resource value: 0x7f070032
+			public const int nickname = 2131165234;
+			
 			// aapt resource value: 0x7f07002c
 			public const int normalsync = 2131165228;
 			
@@ -233,9 +236,6 @@ namespace BlaChat
 			
 			// aapt resource value: 0x7f070031
 			public const int textView6 = 2131165233;
-			
-			// aapt resource value: 0x7f070032
-			public const int textView7 = 2131165234;
 			
 			// aapt resource value: 0x7f070033
 			public const int textView8 = 2131165235;
