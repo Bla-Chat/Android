@@ -59,6 +59,10 @@ namespace BlaChat
 			var darkTheme = FindViewById<RadioButton> (Resource.Id.darktheme);
 			var materialTheme = FindViewById<RadioButton> (Resource.Id.materialtheme);
 			var materialThemeDark = FindViewById<RadioButton> (Resource.Id.materialthemeDark);
+			var materialThemeBlue = FindViewById<RadioButton> (Resource.Id.materialthemeBlue);
+			var materialThemeDarkBlue = FindViewById<RadioButton> (Resource.Id.materialthemeDarkBlue);
+			var materialThemeGreen = FindViewById<RadioButton> (Resource.Id.materialthemeGreen);
+			var materialThemeDarkGreen = FindViewById<RadioButton> (Resource.Id.materialthemeDarkGreen);
 
 			lightTheme.Checked = setting.Theme == Resource.Style.LightHolo;
 			darkTheme.Checked = setting.Theme == Resource.Style.DarkHolo;
@@ -70,9 +74,25 @@ namespace BlaChat
 				materialThemeDark.Checked = setting.Theme == Resource.Style.DarkMaterial;
 				materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Resource.Style.LightMaterial; db.Update(setting); }};
 				materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Resource.Style.DarkMaterial; db.Update(setting); }};
+
+				materialThemeBlue.Checked = setting.Theme == Resource.Style.LightBlueMaterial;
+				materialThemeDarkBlue.Checked = setting.Theme == Resource.Style.DarkBlueMaterial;
+				materialThemeBlue.CheckedChange += delegate { if (materialThemeBlue.Checked) { setting.Theme = Resource.Style.LightBlueMaterial; db.Update(setting); }};
+				materialThemeDarkBlue.CheckedChange += delegate { if (materialThemeDarkBlue.Checked) { setting.Theme = Resource.Style.DarkBlueMaterial; db.Update(setting); }};
+
+				materialThemeGreen.Checked = setting.Theme == Resource.Style.LightGreenMaterial;
+				materialThemeDarkGreen.Checked = setting.Theme == Resource.Style.DarkGreenMaterial;
+				materialThemeGreen.CheckedChange += delegate { if (materialThemeGreen.Checked) { setting.Theme = Resource.Style.LightGreenMaterial; db.Update(setting); }};
+				materialThemeDarkGreen.CheckedChange += delegate { if (materialThemeDarkGreen.Checked) { setting.Theme = Resource.Style.DarkGreenMaterial; db.Update(setting); }};
 			} else {
 				materialTheme.Visibility = ViewStates.Gone;
 				materialThemeDark.Visibility = ViewStates.Gone;
+
+				materialThemeBlue.Visibility = ViewStates.Gone;
+				materialThemeDarkBlue.Visibility = ViewStates.Gone;
+
+				materialThemeGreen.Visibility = ViewStates.Gone;
+				materialThemeDarkGreen.Visibility = ViewStates.Gone;
 			}
 
 			var notifications = FindViewById<CheckBox> (Resource.Id.notifications);

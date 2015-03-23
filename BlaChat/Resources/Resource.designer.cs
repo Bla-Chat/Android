@@ -60,35 +60,35 @@ namespace BlaChat
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f080047
+			public const int action_addFriend = 2131230791;
+			
+			// aapt resource value: 0x7f080046
+			public const int action_createConversation = 2131230790;
+			
 			// aapt resource value: 0x7f080043
-			public const int action_addFriend = 2131230787;
+			public const int action_defaultMessages = 2131230787;
 			
 			// aapt resource value: 0x7f080042
-			public const int action_createConversation = 2131230786;
-			
-			// aapt resource value: 0x7f08003f
-			public const int action_defaultMessages = 2131230783;
-			
-			// aapt resource value: 0x7f08003e
-			public const int action_lessMessages = 2131230782;
-			
-			// aapt resource value: 0x7f08003d
-			public const int action_moreMessages = 2131230781;
-			
-			// aapt resource value: 0x7f080040
-			public const int action_rename = 2131230784;
-			
-			// aapt resource value: 0x7f08003b
-			public const int action_sendImage = 2131230779;
+			public const int action_lessMessages = 2131230786;
 			
 			// aapt resource value: 0x7f080041
-			public const int action_setImage = 2131230785;
+			public const int action_moreMessages = 2131230785;
 			
-			// aapt resource value: 0x7f08003c
-			public const int action_settings = 2131230780;
+			// aapt resource value: 0x7f080044
+			public const int action_rename = 2131230788;
 			
-			// aapt resource value: 0x7f080035
-			public const int changeProfile = 2131230773;
+			// aapt resource value: 0x7f08003f
+			public const int action_sendImage = 2131230783;
+			
+			// aapt resource value: 0x7f080045
+			public const int action_setImage = 2131230789;
+			
+			// aapt resource value: 0x7f080040
+			public const int action_settings = 2131230784;
+			
+			// aapt resource value: 0x7f080039
+			public const int changeProfile = 2131230777;
 			
 			// aapt resource value: 0x7f080008
 			public const int chatImage = 2131230728;
@@ -120,14 +120,14 @@ namespace BlaChat
 			// aapt resource value: 0x7f08001b
 			public const int fontsizes = 2131230747;
 			
-			// aapt resource value: 0x7f08002b
-			public const int highsync = 2131230763;
+			// aapt resource value: 0x7f08002f
+			public const int highsync = 2131230767;
 			
 			// aapt resource value: 0x7f08001c
 			public const int largefont = 2131230748;
 			
-			// aapt resource value: 0x7f080028
-			public const int led = 2131230760;
+			// aapt resource value: 0x7f08002c
+			public const int led = 2131230764;
 			
 			// aapt resource value: 0x7f080020
 			public const int lighttheme = 2131230752;
@@ -141,17 +141,29 @@ namespace BlaChat
 			// aapt resource value: 0x7f080006
 			public const int login = 2131230726;
 			
-			// aapt resource value: 0x7f080037
-			public const int logout = 2131230775;
+			// aapt resource value: 0x7f08003b
+			public const int logout = 2131230779;
 			
-			// aapt resource value: 0x7f08002d
-			public const int lowsync = 2131230765;
+			// aapt resource value: 0x7f080031
+			public const int lowsync = 2131230769;
 			
 			// aapt resource value: 0x7f080022
 			public const int materialtheme = 2131230754;
 			
+			// aapt resource value: 0x7f080024
+			public const int materialthemeBlue = 2131230756;
+			
 			// aapt resource value: 0x7f080023
 			public const int materialthemeDark = 2131230755;
+			
+			// aapt resource value: 0x7f080025
+			public const int materialthemeDarkBlue = 2131230757;
+			
+			// aapt resource value: 0x7f080027
+			public const int materialthemeDarkGreen = 2131230759;
+			
+			// aapt resource value: 0x7f080026
+			public const int materialthemeGreen = 2131230758;
 			
 			// aapt resource value: 0x7f08001d
 			public const int mediumfont = 2131230749;
@@ -174,23 +186,23 @@ namespace BlaChat
 			// aapt resource value: 0x7f080019
 			public const int messageText = 2131230745;
 			
-			// aapt resource value: 0x7f080034
-			public const int name = 2131230772;
+			// aapt resource value: 0x7f080038
+			public const int name = 2131230776;
 			
-			// aapt resource value: 0x7f08002a
-			public const int network = 2131230762;
+			// aapt resource value: 0x7f08002e
+			public const int network = 2131230766;
 			
-			// aapt resource value: 0x7f080039
-			public const int newestVersion = 2131230777;
+			// aapt resource value: 0x7f08003d
+			public const int newestVersion = 2131230781;
 			
-			// aapt resource value: 0x7f080032
-			public const int nickname = 2131230770;
+			// aapt resource value: 0x7f080036
+			public const int nickname = 2131230774;
 			
-			// aapt resource value: 0x7f08002c
-			public const int normalsync = 2131230764;
+			// aapt resource value: 0x7f080030
+			public const int normalsync = 2131230768;
 			
-			// aapt resource value: 0x7f080025
-			public const int notifications = 2131230757;
+			// aapt resource value: 0x7f080029
+			public const int notifications = 2131230761;
 			
 			// aapt resource value: 0x7f080003
 			public const int password = 2131230723;
@@ -201,8 +213,8 @@ namespace BlaChat
 			// aapt resource value: 0x7f080016
 			public const int placeholder = 2131230742;
 			
-			// aapt resource value: 0x7f080036
-			public const int save = 2131230774;
+			// aapt resource value: 0x7f08003a
+			public const int save = 2131230778;
 			
 			// aapt resource value: 0x7f080017
 			public const int scrollView1 = 2131230743;
@@ -219,35 +231,35 @@ namespace BlaChat
 			// aapt resource value: 0x7f08001e
 			public const int smallfont = 2131230750;
 			
-			// aapt resource value: 0x7f080027
-			public const int sound = 2131230759;
+			// aapt resource value: 0x7f08002b
+			public const int sound = 2131230763;
 			
 			// aapt resource value: 0x7f08001a
 			public const int textView1 = 2131230746;
 			
-			// aapt resource value: 0x7f080024
-			public const int textView2 = 2131230756;
-			
-			// aapt resource value: 0x7f08002f
-			public const int textView3 = 2131230767;
-			
-			// aapt resource value: 0x7f080030
-			public const int textView5 = 2131230768;
-			
-			// aapt resource value: 0x7f080031
-			public const int textView6 = 2131230769;
+			// aapt resource value: 0x7f080028
+			public const int textView2 = 2131230760;
 			
 			// aapt resource value: 0x7f080033
-			public const int textView8 = 2131230771;
+			public const int textView3 = 2131230771;
 			
-			// aapt resource value: 0x7f080029
-			public const int textView9 = 2131230761;
+			// aapt resource value: 0x7f080034
+			public const int textView5 = 2131230772;
+			
+			// aapt resource value: 0x7f080035
+			public const int textView6 = 2131230773;
+			
+			// aapt resource value: 0x7f080037
+			public const int textView8 = 2131230775;
+			
+			// aapt resource value: 0x7f08002d
+			public const int textView9 = 2131230765;
 			
 			// aapt resource value: 0x7f08001f
 			public const int themes = 2131230751;
 			
-			// aapt resource value: 0x7f08003a
-			public const int timeInsertTime = 2131230778;
+			// aapt resource value: 0x7f08003e
+			public const int timeInsertTime = 2131230782;
 			
 			// aapt resource value: 0x7f080001
 			public const int username = 2131230721;
@@ -255,14 +267,14 @@ namespace BlaChat
 			// aapt resource value: 0x7f080000
 			public const int usernameLabel = 2131230720;
 			
-			// aapt resource value: 0x7f080038
-			public const int version = 2131230776;
+			// aapt resource value: 0x7f08003c
+			public const int version = 2131230780;
 			
-			// aapt resource value: 0x7f080026
-			public const int vibrate = 2131230758;
+			// aapt resource value: 0x7f08002a
+			public const int vibrate = 2131230762;
 			
-			// aapt resource value: 0x7f08002e
-			public const int wlansync = 2131230766;
+			// aapt resource value: 0x7f080032
+			public const int wlansync = 2131230770;
 			
 			static Id()
 			{
@@ -395,6 +407,12 @@ namespace BlaChat
 		public partial class Style
 		{
 			
+			// aapt resource value: 0x7f060006
+			public const int DarkBlueMaterial = 2131099654;
+			
+			// aapt resource value: 0x7f060008
+			public const int DarkGreenMaterial = 2131099656;
+			
 			// aapt resource value: 0x7f060000
 			public const int DarkHolo = 2131099648;
 			
@@ -403,6 +421,12 @@ namespace BlaChat
 			
 			// aapt resource value: 0x7f060004
 			public const int DarkMaterial = 2131099652;
+			
+			// aapt resource value: 0x7f060007
+			public const int LightBlueMaterial = 2131099655;
+			
+			// aapt resource value: 0x7f060009
+			public const int LightGreenMaterial = 2131099657;
 			
 			// aapt resource value: 0x7f060002
 			public const int LightHolo = 2131099650;

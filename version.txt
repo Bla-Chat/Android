@@ -1,2 +1,2 @@
-2.4 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
-* customized themes to use bla colors
+2.5 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
+* added themes in blue and green for those who do not like purple/pink

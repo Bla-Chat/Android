@@ -37,4 +37,32 @@
         <item name="android:colorPrimaryDark">#5D085D</item>
         <item name="android:colorPrimary">#C17BC1</item>
     </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="DarkBlueMaterial" parent="android:Theme.Material">
+        <item name="android:colorPrimary">#153672</item>
+        <item name="android:colorPrimaryDark">#031639</item>
+        <item name="android:navigationBarColor">#153672</item>
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="LightBlueMaterial" parent="android:Theme.Material.Light">
+        <item name="android:navigationBarColor">#6A87BB</item>
+        <item name="android:colorPrimaryDark">#355796</item>
+        <item name="android:colorPrimary">#6A87BB</item>
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="DarkGreenMaterial" parent="android:Theme.Material">
+        <item name="android:colorPrimary">#3A940F</item>
+        <item name="android:colorPrimaryDark">#184B00</item>
+        <item name="android:navigationBarColor">#3A940F</item>
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="LightGreenMaterial" parent="android:Theme.Material.Light">
+        <item name="android:navigationBarColor">#99E376</item>
+        <item name="android:colorPrimaryDark">#65C338</item>
+        <item name="android:colorPrimary">#99E376</item>
+    </style>
 </resources>

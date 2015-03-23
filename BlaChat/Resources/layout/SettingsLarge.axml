@@ -75,6 +75,30 @@
                     android:text="Material Theme (Dark)"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:id="@+id/materialthemeDark" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Material Theme (Light Blue)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/materialthemeBlue" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Material Theme (Dark Blue)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/materialthemeDarkBlue" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Material Theme (Light Green)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/materialthemeGreen" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Material Theme (Dark Green)"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/materialthemeDarkGreen" />
             </RadioGroup>
             <TextView
                 android:text="Notifications"
