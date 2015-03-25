@@ -67,6 +67,7 @@
     <Compile Include="Data\Setting.cs" />
     <Compile Include="ShareActivity.cs" />
     <Compile Include="UpdateChecker.cs" />
+    <Compile Include="SpannableTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />
@@ -100,11 +101,44 @@
     <AndroidResource Include="Resources\layout\SettingsLarge.axml" />
     <AndroidResource Include="Resources\layout\TimeInsertLarge.axml" />
     <AndroidResource Include="Resources\values\Themes.xml" />
+    <AndroidResource Include="Resources\drawable\angel.png" />
+    <AndroidResource Include="Resources\drawable\angry.png" />
+    <AndroidResource Include="Resources\drawable\blink.png" />
+    <AndroidResource Include="Resources\drawable\cool.png" />
+    <AndroidResource Include="Resources\drawable\cry.png" />
+    <AndroidResource Include="Resources\drawable\girl.png" />
+    <AndroidResource Include="Resources\drawable\happy.png" />
+    <AndroidResource Include="Resources\drawable\hug.png" />
+    <AndroidResource Include="Resources\drawable\idea.png" />
+    <AndroidResource Include="Resources\drawable\ill.png" />
+    <AndroidResource Include="Resources\drawable\ill2.png" />
+    <AndroidResource Include="Resources\drawable\laugh.png" />
+    <AndroidResource Include="Resources\drawable\looser.png" />
+    <AndroidResource Include="Resources\drawable\love.png" />
+    <AndroidResource Include="Resources\drawable\mad.png" />
+    <AndroidResource Include="Resources\drawable\music.png" />
+    <AndroidResource Include="Resources\drawable\mute.png" />
+    <AndroidResource Include="Resources\drawable\neutral.png" />
+    <AndroidResource Include="Resources\drawable\party.png" />
+    <AndroidResource Include="Resources\drawable\pew.png" />
+    <AndroidResource Include="Resources\drawable\sad.png" />
+    <AndroidResource Include="Resources\drawable\scratch.png" />
+    <AndroidResource Include="Resources\drawable\sick.png" />
+    <AndroidResource Include="Resources\drawable\sleep.png" />
+    <AndroidResource Include="Resources\drawable\sleep2.png" />
+    <AndroidResource Include="Resources\drawable\smart.png" />
+    <AndroidResource Include="Resources\drawable\smile.png" />
+    <AndroidResource Include="Resources\drawable\thumbs.png" />
+    <AndroidResource Include="Resources\drawable\tired.png" />
+    <AndroidResource Include="Resources\drawable\tongue.png" />
+    <AndroidResource Include="Resources\drawable\watch.png" />
+    <AndroidResource Include="Resources\drawable\watchtired.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Resources\Raw\" />
     <Folder Include="Data\" />
     <Folder Include="Resources\menu\" />
+    <Folder Include="Resources\drawable\" />
   </ItemGroup>
 </Project>

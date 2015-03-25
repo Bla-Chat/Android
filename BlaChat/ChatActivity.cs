@@ -18,6 +18,7 @@ using Android.Util;
 using Android.Graphics;
 using System.Net;
 using Android.Provider;
+using Android.Text;
 
 namespace BlaChat
 {
@@ -344,7 +345,7 @@ namespace BlaChat
 					escape = escape.Replace ("&lt;", "<");
 					escape = escape.Replace ("&gt;", ">");
 					escape = escape.Replace ("&amp;", "&");
-					text.Text = escape;
+					text.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(escape));
 				}
 
 				TextView caption = v.FindViewById<TextView>(Resource.Id.messageCaption);

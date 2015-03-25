@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Android.Util;
 using System.Collections.Generic;
 using Android.Views.InputMethods;
+using Android.Text;
 
 namespace BlaChat
 {
@@ -178,12 +179,12 @@ namespace BlaChat
 					escape = escape.Replace ("&gt;", ">");
 					escape = escape.Replace ("&amp;", "&");
 					if (lastMsg.nick == user.user) {
-						message.Text = "Du: " + escape;
+						message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString("Du: " + escape));
 					} else {
 						if (elem.conversation.Split (',').Length == 2 && lastMsg.nick != "watchdog") {
-							message.Text = escape;
+							message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(escape));
 						} else {
-							message.Text = lastMsg.author + ": " + escape;
+							message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(lastMsg.author + ": " + escape));
 						}
 					}
 					time.Text = TimeConverter.AutoConvert(lastMsg.time);
