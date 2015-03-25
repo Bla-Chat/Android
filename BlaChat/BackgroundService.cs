@@ -60,7 +60,9 @@ namespace BlaChat
 					while (true) {
 						Setting.Frequency f = db.Table<Setting>().FirstOrDefault().Synchronisation;
 						if (f != Setting.Frequency.wlan || connectivityManager.GetNetworkInfo(ConnectivityType.Wifi).GetState() == NetworkInfo.State.Connected) {
-							await network.UpdateEvents (db, user);
+							while(!await network.UpdateEvents (db, user)) {
+								await network.Authenticate(db, user);
+							}
 						}
 
 						// Wifi connection gets normal updates, other networks get 4 times worse update time.
@@ -121,7 +123,9 @@ namespace BlaChat
 			}
 			var chat = db.Get<Chat> (e.msg);
 			if (chat == null) {
-				await network.UpdateChats (db, user);
+				while(!await network.UpdateChats (db, user)) {
+					await network.Authenticate(db, user);
+				}
 				chat = db.Get<Chat> (e.msg);
 			}
 			chat.time = e.time;

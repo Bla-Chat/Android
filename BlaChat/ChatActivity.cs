@@ -74,7 +74,9 @@ namespace BlaChat
 
 				OnBind();
 				new Thread(async () => {
-					await network.SendMessage (db, user, chat, msg);
+					while(!await network.SendMessage (db, user, chat, msg)) {
+						await network.Authenticate(db, user);
+					}
 					RunOnUiThread(() => {
 						send.Enabled = true;
 					});
@@ -146,7 +148,9 @@ namespace BlaChat
 			var x = db.Table<Message> ();
 			if (x.Where(q => q.conversation == conversation).Count() < visibleMessages) {
 				new Thread(async () => {
-					await network.UpdateHistory(db, user, chat, visibleMessages);
+					while(!await network.UpdateHistory(db, user, chat, visibleMessages)) {
+						await network.Authenticate(db, user);
+					}
 					RunOnUiThread(() => UpdateMessages (user));
 				}).Start();
 			} else {
@@ -170,7 +174,11 @@ namespace BlaChat
 				Toast.MakeText (this, "Sending image...", ToastLength.Long);
 
 				Bitmap img = MediaStore.Images.Media.GetBitmap(ContentResolver, data.Data);
-				new Thread(() => network.SendImage (db, user, chat, img)).Start();
+				new Thread(async () => {
+					while(!await network.SendImage (db, user, chat, img)) {
+						await network.Authenticate(db, user);
+					}
+				}).Start();
 			}
 		}
 

@@ -130,21 +130,20 @@ namespace BlaChat
 				Log.Error ("BlaChat", ex.StackTrace);
 			}
 
-			await EventHandling (db, result);
-
-			return success;
+			return success && await EventHandling (db, result) == 0;
 		}
 
 		public async Task<bool> Authenticate(DataBaseWrapper db, User user)
 		{
 			string encodedJson = escape (String.Format ("{{\"user\":\"{0}\", \"pw\":\"{1}\"}}", user.user, user.password));
+			bool success = false;
 
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
 			try {
 				if (result.ContainsKey ("id")) {
 					user.id = result ["id"];
 					db.Update (user);
-					return true;
+					success = true;
 				}
 			} catch (Exception ex) {
 				Log.Error ("BlaChat", ex.StackTrace);
@@ -152,7 +151,7 @@ namespace BlaChat
 				EventHandling (db, result);
 			}
 
-			return false;
+			return success && await EventHandling (db, result) == 0;
 		}
 
 		public Task<bool> UpdateChats(DataBaseWrapper db, User user)
@@ -209,7 +208,7 @@ namespace BlaChat
 		public async Task<bool> SendImage (DataBaseWrapper db, User user, Chat chat, Bitmap bitmap)
 		{
 			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", \"data\":{{\"conversation\":\"{1}\"}}}}", user.id, chat.conversation));
-
+			var success = false;
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("msg", encodedJson);
 			string tmp = null;
@@ -219,16 +218,16 @@ namespace BlaChat
 			var result = JsonValue.Parse (tmp);
 
 			try {
-				await EventHandling (db, result);
+				success = 0 == await EventHandling (db, result);
 
-				if (result.ContainsKey ("onData")) {
-					return true;
+				if (!result.ContainsKey ("onData")) {
+					success = false;
 				}
 			} catch (Exception ex) {
 				Log.Error ("BlaChat", ex.StackTrace);
 			}
 
-			return false;
+			return success;
 		}
 
         private String HttpUploadFile(string url, Bitmap img, string paramName, string contentType, NameValueCollection nvc)
@@ -302,15 +301,16 @@ namespace BlaChat
 			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\"}}", user.id));
 
 			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
-
+			var success = false;
 			try {
-				await EventHandling (db, result);
+				success = 0 == await EventHandling (db, result);
 			} catch (Exception ex) {
 				Log.Error ("BlaChat", ex.StackTrace);
 			}
 
 			updateEventTask = null;
-			return true;
+
+			return success;
 		}
 
 		public async Task<bool> RemoveEvent(DataBaseWrapper db, User user, Event e)
@@ -318,59 +318,59 @@ namespace BlaChat
 			string encodedJson = escape(String.Format("{{\"id\":\"{0}\", \"removeEvent\":{{\"conversation\":\"{1}\"}}}}", user.id, e.msg));
 
 			var result = JsonValue.Parse(await Download(user.server + "/xjcp.php?msg=" + encodedJson));
-
+			var success = false;
 			try {
-				await EventHandling (db, result);
+				success = 0 == await EventHandling (db, result);
 			} catch (Exception ex) {
 				Log.Error ("BlaChat", ex.StackTrace);
 			}
 
-			return true;
+			return success;
 		}
 
 		public async Task<bool> NewChat(DataBaseWrapper db, User user, List<User> users, string name)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> RenameChat(DataBaseWrapper db, User user, Chat chat, string name)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> SetName(DataBaseWrapper db, User user, string name)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> AddFriend(DataBaseWrapper db, User user, string name)
 		{
-			return false;
+			return true;
 		}
 			
 		public async Task<bool> SetStatus(DataBaseWrapper db, User user, string status)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> SetProfileImage(DataBaseWrapper db, User user, object image)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> SetGroupImage(DataBaseWrapper db, User user, Chat chat, object image)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> InjectEvent(DataBaseWrapper db, User user, Event e)
 		{
-			return false;
+			return true;
 		}
 
 		public async Task<bool> Data(DataBaseWrapper db, User user, Chat chat, object data)
 		{
-			return false;
+			return true;
 		}
 
 		public Task<bool> UpdateHistory(DataBaseWrapper db, User user, Chat chat, int count)
@@ -417,6 +417,9 @@ namespace BlaChat
 				if (backgroundService != null) {
 					await backgroundService.UpdateNotifications();
 				}
+			}
+			if (result.ContainsKey ("onLoginError")) {
+				return 1;
 			}
 			return 0;
 		}

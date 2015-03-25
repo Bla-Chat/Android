@@ -235,14 +235,18 @@ namespace BlaChat
 					new Thread(async () => {
 						int i = 0;
 						db.Insert(user);
-						await network.UpdateChats (db, user);
+						while(!await network.UpdateChats (db, user)) {
+							await network.Authenticate(db, user);
+						}
 						var x = db.Table<Chat> ();
 						int count = x.Count();
 						var tasks = new List<Task<bool>>();
 						RunOnUiThread(() => initializeAuthenticated(user));
 
 						foreach (var chat in x) {
-							await network.UpdateHistory(db, user, chat, 30);
+							while(!await network.UpdateHistory(db, user, chat, 30)) {
+								await network.Authenticate(db, user);
+							}
 							OnUpdateRequested();
 						}
 					}).Start();

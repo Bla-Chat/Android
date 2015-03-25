@@ -213,13 +213,17 @@ namespace BlaChat
 					StartActivity (intent);
 					var chat = db.Get<Chat> (elem.conversation);
 					new Thread(async () => {
-					if (textShare != null) {
-						await network.SendMessage(db, user, chat, "(Shared Text) " + textShare);
-					}
-					foreach(var file in fileset) {
-						Bitmap img = MediaStore.Images.Media.GetBitmap(ContentResolver, file);
-						await network.SendImage(db, user, chat, img);
-					}
+						if (textShare != null) {
+							while(!await network.SendMessage(db, user, chat, "(Shared Text) " + textShare)) {
+								await network.Authenticate(db, user);
+							}
+						}
+						foreach(var file in fileset) {
+							Bitmap img = MediaStore.Images.Media.GetBitmap(ContentResolver, file);
+							while(!await network.SendImage(db, user, chat, img)) {
+								await network.Authenticate(db, user);
+							}
+						}
 					}).Start();
 				};
 				chatList.AddView(v);
