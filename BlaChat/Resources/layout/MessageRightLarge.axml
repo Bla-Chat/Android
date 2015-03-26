@@ -13,17 +13,24 @@
         android:id="@+id/messageCaption"
         android:gravity="right"
         android:paddingRight="4dp" />
-    <TextView
-        android:text="Text"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/messageText"
-        android:gravity="left"
-        android:layout_marginBottom="13dp"
-        android:tag="Message Text"
-        android:paddingRight="10dp"
+        android:id="@+id/relativeLayout1"
         android:paddingLeft="80dp"
-        android:autoLink="all"
-        android:textIsSelectable="true" />
+        android:paddingRight="10dp"
+        android:gravity="right">
+        <TextView
+            android:text="Text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/messageText"
+            android:gravity="left"
+            android:tag="Message Text"
+            android:textIsSelectable="true"
+            android:autoLink="all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 </LinearLayout>

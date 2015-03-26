@@ -1,2 +1,6 @@
-2.7 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
-* Emoticon support :)
+2.8 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
+* Emoticons everywhere :)
+* Tweaked messages a little bit.
+* *party*
+* *thumbs up*
+* zzz

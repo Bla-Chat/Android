@@ -96,24 +96,25 @@ namespace BlaChat
 				var smiley = entry.Key;
 				var smileyImage = entry.Value;
 				var indices = spannable.ToString().IndexesOf(smiley);
-				foreach (var index in indices)
+				var index = 0;
+				foreach (var token in spannable.ToString().Split(' '))
 				{
-					var set = true;
-					foreach (ImageSpan span in spannable.GetSpans(index, index + smiley.Length, Java.Lang.Class.FromType(typeof(ImageSpan))))
-					{
-						if (spannable.GetSpanStart(span) >= index && spannable.GetSpanEnd(span) <= index + smiley.Length)
-							spannable.RemoveSpan(span);
-						else
-						{
-							set = false;
-							break;
+					if (token.Equals (smiley)) {
+						var set = true;
+						foreach (ImageSpan span in spannable.GetSpans(index, index + smiley.Length, Java.Lang.Class.FromType(typeof(ImageSpan)))) {
+							if (spannable.GetSpanStart (span) >= index && spannable.GetSpanEnd (span) <= index + smiley.Length)
+								spannable.RemoveSpan (span);
+							else {
+								set = false;
+								break;
+							}
+						}
+						if (set) {
+							hasChanges = true;
+							spannable.SetSpan (new ImageSpan (context, smileyImage), index, index + smiley.Length, SpanTypes.ExclusiveExclusive);
 						}
 					}
-					if (set)
-					{
-						hasChanges = true;
-						spannable.SetSpan(new ImageSpan(context, smileyImage), index, index + smiley.Length, SpanTypes.ExclusiveExclusive );
-					}
+					index += token.Length + 1;
 				}
 			}
 			return hasChanges;

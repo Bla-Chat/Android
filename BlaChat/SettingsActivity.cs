@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Text;
 
 namespace BlaChat
 {
@@ -135,7 +136,7 @@ namespace BlaChat
 
 			currentVersion.Text = Setting.CurrentVersion;
 			if (setting.NewestVersion != null && !setting.NewestVersion.StartsWith (Setting.CurrentVersion)) {
-				newestVersion.Text = setting.NewestVersion;
+				newestVersion.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(setting.NewestVersion));
 			} else {
 				newestVersion.Text = Setting.CurrentVersion;
 			}

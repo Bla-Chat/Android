@@ -170,7 +170,7 @@ namespace BlaChat
 					}
 				}).Start();
 
-				name.Text = elem.name;
+				name.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(elem.name));
 				var tmp = db.Table<Message> ().Where (q => q.conversation == elem.conversation).OrderByDescending (q => q.time);
 				var lastMsg = tmp.FirstOrDefault ();
 				if (lastMsg != null) {
@@ -178,6 +178,11 @@ namespace BlaChat
 					escape = escape.Replace ("&lt;", "<");
 					escape = escape.Replace ("&gt;", ">");
 					escape = escape.Replace ("&amp;", "&");
+					if (escape.StartsWith ("#image")) {
+						escape = "(image)";
+					} else if (escape.StartsWith ("#video")) {
+						escape = "(video)";
+					}
 					if (lastMsg.nick == user.user) {
 						message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString("Du: " + escape));
 					} else {

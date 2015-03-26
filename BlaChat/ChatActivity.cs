@@ -350,7 +350,7 @@ namespace BlaChat
 
 				TextView caption = v.FindViewById<TextView>(Resource.Id.messageCaption);
 				if (elem.nick != user.user) {
-					caption.Text = elem.author + " (" + elem.time.Substring(11, 5) + ")";
+					caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(elem.author + " (" + elem.time.Substring(11, 5) + ")"));
 				} else {
 					caption.Text = "Du (" + elem.time.Substring(11, 5) + ")";
 				}

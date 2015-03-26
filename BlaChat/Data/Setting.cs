@@ -6,7 +6,7 @@ namespace BlaChat
 	[Table("Settings")]
 	public class Setting
 	{
-		public const string CurrentVersion = "2.7";
+		public const string CurrentVersion = "2.8";
 
 		public enum Size { large, medium, small };
 		public enum Frequency { often, normal, rare, wlan }
