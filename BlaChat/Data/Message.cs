@@ -1,9 +1,10 @@
 ﻿using SQLite;
+using System;
 
 namespace BlaChat
 {
 	[Table("Messages")]
-	public class Message
+	public class Message : IEqualsExpression<Message>
 	{
 		[PrimaryKey, AutoIncrement]
 		public int id { get; set; }
@@ -19,14 +20,9 @@ namespace BlaChat
 		{
 		}
 
-		public override bool Equals (object obj)
+		public System.Linq.Expressions.Expression<Func<Message, bool>> EqualsExpression ()
 		{
-			if (obj.GetType() == typeof(Message)) {
-				Message other = (Message)obj;
-				return conversation == other.conversation && author == other.author && nick == other.nick && time == other.time && text == other.text;
-			} else {
-				return false;
-			}
+			return other => (conversation == other.conversation && nick == other.nick && time == other.time && text == other.text);
 		}
 
 		public override int GetHashCode ()

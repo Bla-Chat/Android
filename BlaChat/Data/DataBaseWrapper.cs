@@ -9,8 +9,8 @@ namespace BlaChat
 {
 	public class DataBaseWrapper
 	{
-		private static object locker = new object();
-		private SQLiteConnection db;
+		private static readonly object locker = new object();
+		private static SQLiteConnection db;
 
 		public DataBaseWrapper (Resources resources)
 		{
@@ -29,7 +29,9 @@ namespace BlaChat
 			string libraryPath = Path.Combine (documentsPath, "..", "Library"); // Library folder instead
 			#endif
 
-			db = new SQLiteConnection (Path.Combine (libraryPath, sqliteFilename));
+			if (db == null) {
+				db = new SQLiteConnection (Path.Combine (libraryPath, sqliteFilename));
+			}
 
 			// FIXME: Remove this once loading db is done correctly.
 			// Create the user table if it doesn't already exist.
@@ -140,6 +142,32 @@ namespace BlaChat
 				} catch(SQLiteException e) {
 					Log.Error("BlaChat", e.StackTrace);
 					return null;
+				}
+			}
+		}
+
+		public TableQuery<T> Table<T>(T probe) where T : IEqualsExpression<T>, new() {
+			lock (locker) {
+				return Table<T> ().Where (probe.EqualsExpression ());
+			}
+		}
+
+		public bool Contains<T>(T probe) where T : IEqualsExpression<T>, new() {
+			lock (locker) {
+				try {
+					return Table<T> (probe).FirstOrDefault() != null;
+				} catch (Exception e) {
+					Log.Error("BlaChat", e.StackTrace);
+					return false;
+				}
+			}
+		}
+
+		public void InsertIfNotContains<T>(T probe) where T : IEqualsExpression<T>, new()
+		{
+			lock (locker) {
+				if (!Contains<T> (probe)) {
+					Insert (probe);
 				}
 			}
 		}

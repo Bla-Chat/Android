@@ -1,30 +1,35 @@
 ﻿<Properties StartupItem="BlaChat\BlaChat.csproj" GitUserInfo="UsingGIT">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.036e138513ad470a" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.192.168.42.26:5555" />
   <MonoDevelop.Ide.Workbench ActiveDocument="BlaChat\Data\Setting.cs">
     <Files>
-      <File FileName="BlaChat\SettingsActivity.cs" Line="30" Column="30" />
+      <File FileName="BlaChat\SettingsActivity.cs" Line="1" Column="1" />
       <File FileName="BlaChat\MainActivity.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\ChatActivity.cs" Line="42" Column="42" />
-      <File FileName="BlaChat\Data\Setting.cs" Line="46" Column="46" />
-      <File FileName="BlaChat\BackgroundService.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\ChatActivity.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Setting.cs" Line="28" Column="44" />
+      <File FileName="BlaChat\BackgroundService.cs" Line="140" Column="1" />
       <File FileName="BlaChat\ShareActivity.cs" Line="1" Column="1" />
       <File FileName="BlaChat\BootReceiver.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\Properties\AndroidManifest.xml" Line="12" Column="12" />
-      <File FileName="c:\Users\Michael\Documents\Projects\bla-chat\bla-chat-smartphone\BlaChat\Data\AsyncNetwork.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Properties\AndroidManifest.xml" Line="35" Column="12" />
+      <File FileName="c:\Users\Michael\Documents\Projects\bla-chat\bla-chat-smartphone\BlaChat\Data\AsyncNetwork.cs" Line="391" Column="7" />
       <File FileName="BlaChat\UpdateChecker.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\Data\Message.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Message.cs" Line="13" Column="3" />
       <File FileName="BlaChat\Resources\values\Themes.xml" Line="1" Column="1" />
       <File FileName="BlaChat\Resources\values\Strings.xml" Line="1" Column="1" />
       <File FileName="BlaChat\ServiceConnection.cs" Line="1" Column="1" />
       <File FileName="BlaChat\Data\SQLite.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\Data\DataBaseWrapper.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\DataBaseWrapper.cs" Line="159" Column="28" />
       <File FileName="BlaChat\Data\Chat.cs" Line="1" Column="1" />
-      <File FileName="BlaChat\SpannableTools.cs" Line="4" Column="4" />
+      <File FileName="BlaChat\SpannableTools.cs" Line="1" Column="1" />
       <File FileName="BlaChat\Resources\Resource.designer.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\TimeConverter.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\Contact.cs" Line="1" Column="1" />
+      <File FileName="BlaChat\Data\IEqualsExpression.cs" Line="10" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\Michael\Documents\Projects\bla-chat\bla-chat-smartphone\BlaChat\Data\DataBaseWrapper.cs" line="160" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="BlaChat\ShareActivity.cs" line="45" offsetX="627" offsetY="704" expression="Intent.Extras" liveUpdate="False" />

@@ -137,7 +137,7 @@ namespace BlaChat
 			msg.nick = e.nick;
 			msg.text = e.text;
 			msg.time = e.time;
-			db.Insert (msg);
+			db.InsertIfNotContains<Message> (msg);
 
 			ResetUpdateInterval ();
 			if (e.msg != ActiveConversation) {

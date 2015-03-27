@@ -68,6 +68,7 @@
     <Compile Include="ShareActivity.cs" />
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="SpannableTools.cs" />
+    <Compile Include="Data\IEqualsExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />

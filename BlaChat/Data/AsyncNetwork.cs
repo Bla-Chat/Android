@@ -382,16 +382,13 @@ namespace BlaChat
 
 				foreach (JsonValue x in msgs) {
 					try {
-						var tmp = db.Table<Message> ().Reverse ().FirstOrDefault (s => s.nick == x ["nick"] && s.conversation == conversation && s.author == x ["author"] && s.text == x ["text"] && s.time == x ["time"]);
-						if (tmp == null) {
-							var msg = new Message ();
-							msg.conversation = conversation;
-							msg.author = x ["author"];
-							msg.nick = x ["nick"];
-							msg.text = x ["text"];
-							msg.time = x ["time"];
-							db.Insert (msg);
-						}
+						var msg = new Message ();
+						msg.conversation = conversation;
+						msg.author = x ["author"];
+						msg.nick = x ["nick"];
+						msg.text = x ["text"];
+						msg.time = x ["time"];
+						db.InsertIfNotContains<Message>(msg);
 					} catch (Exception e) {
 						Log.Error ("BlaChat", e.StackTrace);
 					}
