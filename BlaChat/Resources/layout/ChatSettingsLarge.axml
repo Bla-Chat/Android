@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <CheckBox
+        android:text="Notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatNotifications" />
+    <CheckBox
+        android:text="Read Messages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/readMessages" />
+    <TextView
+        android:text="Visible Messages"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2" />
+    <EditText
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/visibleMessages"
+        android:hint="(0 = use global setting)" />
+    <TextView
+        android:text="Chat Name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatName"
+        android:hint="chat name" />
+    <ImageButton
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatImage" />
+</LinearLayout>
