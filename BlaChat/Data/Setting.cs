@@ -6,7 +6,7 @@ namespace BlaChat
 	[Table("Settings")]
 	public class Setting
 	{
-		public const string CurrentVersion = "2.9";
+		public const string CurrentVersion = "3.0";
 
 		public enum Size { large, medium, small };
 		public enum Frequency { often, normal, rare, wlan }
@@ -27,9 +27,14 @@ namespace BlaChat
 
 		public string NewestVersion { get; set; }
 
+		public int VisibleMessages { get; set; }
+		public bool ReadMessagesEnabled { get; set; }
+
 		public Setting ()
 		{
 			Theme = Resource.Style.LightHolo;
+			VisibleMessages = 30;
+			ReadMessagesEnabled = true;
 			FontSize = Size.medium;
 			Notifications = true;
 			Vibrate = true;

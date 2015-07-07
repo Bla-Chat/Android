@@ -38,12 +38,15 @@ namespace BlaChat
 		private User user;
 		Setting setting = null;
 
+		int StartupTheme;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			db = new DataBaseWrapper (this.Resources);
 			if ((setting = db.Table<Setting> ().FirstOrDefault ()) == null) {
 				db.Insert(setting = new Setting ());
 			}
+			StartupTheme = setting.Theme;
 			SetTheme (setting.Theme);
 			base.OnCreate (bundle);
 
@@ -52,6 +55,13 @@ namespace BlaChat
 			conversation = Intent.GetStringExtra ("conversation");
 
 			chat = db.Get<Chat> (conversation);
+			visibleMessages = chat.VisibleMessages;
+			if (visibleMessages <= 0) {
+				visibleMessages = setting.VisibleMessages;
+			}
+			if (visibleMessages <= 0) {
+				visibleMessages = 30;
+			}
 			Title = chat.name;
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetIcon (Resource.Drawable.Icon);
@@ -66,21 +76,18 @@ namespace BlaChat
 
 				if (msg.Equals("")) return;
 
-				string tmp = send.Text;
-				send.Enabled = false;
+				LinearLayout messageList = FindViewById<LinearLayout> (Resource.Id.messageLayout);
+				AddMessage(messageList, new Message() {time = "sending", author = "Du", nick = user.user, text = msg, conversation = this.conversation});
 
-				InputMethodManager manager = (InputMethodManager) GetSystemService(InputMethodService);
-				manager.HideSoftInputFromWindow(message.WindowToken, 0);
-				message.Post(() => manager.HideSoftInputFromWindow(message.WindowToken, 0));
+				ScrollView scrollView = FindViewById<ScrollView> (Resource.Id.messageScrollView);
+				scrollView.FullScroll (FocusSearchDirection.Down);
+				scrollView.Post (() => scrollView.FullScroll (FocusSearchDirection.Down));
 
 				OnBind();
 				new Thread(async () => {
 					while(!await network.SendMessage (db, user, chat, msg)) {
 						await network.Authenticate(db, user);
 					}
-					RunOnUiThread(() => {
-						send.Enabled = true;
-					});
 				}).Start();
 			};
 		}
@@ -89,7 +96,7 @@ namespace BlaChat
 		{
 			menu.Clear ();
 			MenuInflater.Inflate(Resource.Menu.chat, menu);
-			if (visibleMessages <= 30) {
+			if (visibleMessages <= 15) {
 				var item = menu.FindItem (Resource.Id.action_lessMessages);
 				item.SetVisible (false);
 				item = menu.FindItem (Resource.Id.action_defaultMessages);
@@ -102,8 +109,10 @@ namespace BlaChat
 		{
 			switch (item.ItemId)
 			{
-			case Resource.Id.action_rename:
-				//do something
+			case Resource.Id.action_localsettings:
+				var intent = new Intent (this, typeof(ChatSettingsActivity));
+				intent.PutExtra ("conversation", conversation);
+				StartActivity (intent);
 				return true;
 			case Resource.Id.action_defaultMessages:
 				defaultMessages();
@@ -117,9 +126,6 @@ namespace BlaChat
 			case Resource.Id.action_sendImage:
 				sendImage ();
 				return true;
-			case Resource.Id.action_setImage:
-				//do something
-				return true;
 			case Resource.Id.action_settings:
 				StartActivity (new Intent (this, typeof(SettingsActivity)));
 				return true;
@@ -128,14 +134,20 @@ namespace BlaChat
 		}
 
 		private void lessMessages() {
-			visibleMessages -= 30;
+			visibleMessages -= 15;
 			UpdateMessages (user);
 			InvalidateOptionsMenu ();
 			OnBind();
 		}
 
 		private void defaultMessages() {
-			visibleMessages = 30;
+			visibleMessages = chat.VisibleMessages;
+			if (visibleMessages <= 0) {
+				visibleMessages = setting.VisibleMessages;
+			}
+			if (visibleMessages <= 0) {
+				visibleMessages = 30;
+			}
 			UpdateMessages (user);
 			InvalidateOptionsMenu ();
 			OnBind();
@@ -144,7 +156,7 @@ namespace BlaChat
 		private void moreMessages() {
 			OnBind();
 
-			visibleMessages += 30;
+			visibleMessages += 15;
 
 			var x = db.Table<Message> ();
 			if (x.Where(q => q.conversation == conversation).Count() < visibleMessages) {
@@ -189,6 +201,7 @@ namespace BlaChat
 				service.ActiveConversation = conversation;
 				service.ChatActivity = this;
 				network.SetBackgroundService (service);
+				service.CancelNotify (conversation);
 			}
 		}
 
@@ -205,6 +218,10 @@ namespace BlaChat
 		protected override void OnResume() {
 			base.OnResume ();
 
+			if (StartupTheme != db.Table<Setting> ().FirstOrDefault ().Theme) {
+				Refresh ();
+			}
+
 			if (service == null) {
 				var sericeIntent = new Intent (this, typeof(BackgroundService));
 				serviceConnection = new ServiceConnection (this);
@@ -217,6 +234,13 @@ namespace BlaChat
 			if (user != null && user.user != null) {
 				UpdateMessagesScrollDown (user);
 			}
+		}
+
+		private void Refresh() {
+			Finish();
+			var intent = new Intent (this, typeof(ChatActivity));
+			intent.PutExtra ("conversation", conversation);
+			StartActivity (intent);
 		}
 
 		public async void OnUpdateRequested() {
@@ -272,91 +296,99 @@ namespace BlaChat
 					messageList.AddView(timeInsert);
 				}
 
-				View v = null;
-				if (elem.text.StartsWith ("#image")) {
-					if (elem.nick == user.user) {
-						if (setting.FontSize == Setting.Size.large) {
-							v = LayoutInflater.Inflate (Resource.Layout.ImageRightLarge, null);
-						} else {
-							v = LayoutInflater.Inflate (Resource.Layout.ImageRight, null);
-						}
-					} else {
-						if (setting.FontSize == Setting.Size.large) {
-							v = LayoutInflater.Inflate (Resource.Layout.ImageLeftLarge, null);
-						} else {
-							v = LayoutInflater.Inflate (Resource.Layout.ImageLeft, null);
-						}
-						ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
-						new Thread (async () => {
-							try {
-								var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + elem.nick + ".png");
-								RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
-							} catch (Exception e) {
-								Log.Error("BlaChat", e.StackTrace);
-							}
-						}).Start();
-					}
-					ImageView contentImage = v.FindViewById<ImageView> (Resource.Id.contentImage);
-					contentImage.Click += delegate {
-						string images = System.IO.Path.Combine (Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Pictures/BlaChat");
-						var filename = elem.text.Substring ("#image ".Length);
-						filename = filename.Substring (filename.LastIndexOf ("/") + 1);
-						filename = System.IO.Path.Combine (images, filename);
-						Intent intent = new Intent (Intent.ActionView);
-						intent.SetDataAndType (Android.Net.Uri.Parse ("file://" + filename), "image/*");
-						StartActivity (intent);
-					};
-					//contentImage.SetOnTouchListener (new TouchListener(this, elem.text.Substring ("#image ".Length)));
-
-					new Thread (async () => {
-						try {
-							var uri = elem.text.Substring ("#image ".Length);
-							var imageBitmap = await network.GetImageBitmapFromUrl(uri);
-							RunOnUiThread(() => contentImage.SetImageBitmap(imageBitmap));
-						} catch (Exception e) {
-							Log.Error("BlaChat", e.StackTrace);
-						}
-					}).Start();
-				} else {
-					if (elem.nick == user.user) {
-						if (setting.FontSize == Setting.Size.large) {
-							v = LayoutInflater.Inflate (Resource.Layout.MessageRightLarge, null);
-						} else {
-							v = LayoutInflater.Inflate (Resource.Layout.MessageRight, null);
-						}
-					} else {
-						if (setting.FontSize == Setting.Size.large) {
-							v = LayoutInflater.Inflate (Resource.Layout.MessageLeftLarge, null);
-						} else {
-							v = LayoutInflater.Inflate (Resource.Layout.MessageLeft, null);
-						}
-						ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
-						new Thread (async () => {
-							try {
-								var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + elem.nick + ".png");
-								RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
-							} catch (Exception e) {
-								Log.Error("BlaChat", e.StackTrace);
-							}
-						}).Start();
-					}
-					TextView text = v.FindViewById<TextView>(Resource.Id.messageText);
-					var escape = elem.text.Replace ("&quot;", "\"");
-					escape = escape.Replace ("&lt;", "<");
-					escape = escape.Replace ("&gt;", ">");
-					escape = escape.Replace ("&amp;", "&");
-					text.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(escape));
-				}
-
-				TextView caption = v.FindViewById<TextView>(Resource.Id.messageCaption);
-				if (elem.nick != user.user) {
-					caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(elem.author + " (" + elem.time.Substring(11, 5) + ")"));
-				} else {
-					caption.Text = "Du (" + elem.time.Substring(11, 5) + ")";
-				}
-				messageList.AddView(v);
+				AddMessage (messageList, elem);
 			}
 			messageList.Post(() => messageList.RequestLayout ());
+		}
+
+		private void AddMessage(LinearLayout messageList, Message elem) {
+			View v = null;
+			if (elem.text.StartsWith ("#image")) {
+				if (elem.nick == user.user) {
+					if (setting.FontSize == Setting.Size.large) {
+						v = LayoutInflater.Inflate (Resource.Layout.ImageRightLarge, null);
+					} else {
+						v = LayoutInflater.Inflate (Resource.Layout.ImageRight, null);
+					}
+				} else {
+					if (setting.FontSize == Setting.Size.large) {
+						v = LayoutInflater.Inflate (Resource.Layout.ImageLeftLarge, null);
+					} else {
+						v = LayoutInflater.Inflate (Resource.Layout.ImageLeft, null);
+					}
+					ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
+					new Thread (async () => {
+						try {
+							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + ".png");
+							RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
+						} catch (Exception e) {
+							Log.Error ("BlaChat", e.StackTrace);
+						}
+					}).Start ();
+				}
+				ImageView contentImage = v.FindViewById<ImageView> (Resource.Id.contentImage);
+				contentImage.Click += delegate {
+					string images = System.IO.Path.Combine (Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Pictures/BlaChat");
+					var filename = elem.text.Substring ("#image ".Length);
+					filename = filename.Substring (filename.LastIndexOf ("/") + 1);
+					filename = System.IO.Path.Combine (images, filename);
+					Intent intent = new Intent (Intent.ActionView);
+					intent.SetDataAndType (Android.Net.Uri.Parse ("file://" + filename), "image/*");
+					StartActivity (intent);
+				};
+				//contentImage.SetOnTouchListener (new TouchListener(this, elem.text.Substring ("#image ".Length)));
+
+				new Thread (async () => {
+					try {
+						var uri = elem.text.Substring ("#image ".Length);
+						var imageBitmap = await network.GetImageBitmapFromUrl (uri);
+						RunOnUiThread (() => contentImage.SetImageBitmap (imageBitmap));
+					} catch (Exception e) {
+						Log.Error ("BlaChat", e.StackTrace);
+					}
+				}).Start ();
+			} else {
+				if (elem.nick == user.user) {
+					if (setting.FontSize == Setting.Size.large) {
+						v = LayoutInflater.Inflate (Resource.Layout.MessageRightLarge, null);
+					} else {
+						v = LayoutInflater.Inflate (Resource.Layout.MessageRight, null);
+					}
+				} else {
+					if (setting.FontSize == Setting.Size.large) {
+						v = LayoutInflater.Inflate (Resource.Layout.MessageLeftLarge, null);
+					} else {
+						v = LayoutInflater.Inflate (Resource.Layout.MessageLeft, null);
+					}
+					ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
+					new Thread (async () => {
+						try {
+							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + ".png");
+							RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
+						} catch (Exception e) {
+							Log.Error ("BlaChat", e.StackTrace);
+						}
+					}).Start ();
+				}
+				TextView text = v.FindViewById<TextView> (Resource.Id.messageText);
+				var escape = elem.text.Replace ("&quot;", "\"");
+				escape = escape.Replace ("&lt;", "<");
+				escape = escape.Replace ("&gt;", ">");
+				escape = escape.Replace ("&amp;", "&");
+				text.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (escape));
+			}
+
+			TextView caption = v.FindViewById<TextView> (Resource.Id.messageCaption);
+			if (elem.nick != user.user) {
+				caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (elem.author + " (" + elem.time.Substring (11, 5) + ")"));
+			} else {
+				if (elem.time == "sending") {
+					caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString ("Du (" + elem.time + ")"));
+				} else {
+					caption.Text = "Du (" + elem.time.Substring (11, 5) + ")";
+				}
+			}
+			messageList.AddView (v);
 		}
 	}
 }

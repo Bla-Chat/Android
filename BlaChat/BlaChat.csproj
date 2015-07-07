@@ -69,6 +69,7 @@
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="SpannableTools.cs" />
     <Compile Include="Data\IEqualsExpression.cs" />
+    <Compile Include="ChatSettingsActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AboutAssets.txt" />
@@ -134,6 +135,8 @@
     <AndroidResource Include="Resources\drawable\tongue.png" />
     <AndroidResource Include="Resources\drawable\watch.png" />
     <AndroidResource Include="Resources\drawable\watchtired.png" />
+    <AndroidResource Include="Resources\layout\ChatSettings.axml" />
+    <AndroidResource Include="Resources\layout\ChatSettingsLarge.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

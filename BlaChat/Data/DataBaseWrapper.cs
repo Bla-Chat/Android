@@ -72,6 +72,16 @@ namespace BlaChat
 			}
 		}
 
+		public void DropUserSpecificData() {
+			lock (locker) {
+				db.DeleteAll<User> ();
+				db.DeleteAll<Event> ();
+				db.DeleteAll<Message> ();
+				db.DeleteAll<Contact> ();
+				db.DeleteAll<Chat> ();
+			}
+		}
+
 		public void CreateTable<T> () {
 			lock (locker) {
 				try {

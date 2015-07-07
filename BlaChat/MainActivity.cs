@@ -12,6 +12,7 @@ using Android.Util;
 using System.Collections.Generic;
 using Android.Views.InputMethods;
 using Android.Text;
+using Android.Graphics;
 
 namespace BlaChat
 {
@@ -23,6 +24,7 @@ namespace BlaChat
 		private DataBaseWrapper db = null;
 		private ServiceConnection serviceConnection = null;
 		Setting setting = null;
+		int StartupTheme;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -30,6 +32,7 @@ namespace BlaChat
 			if ((setting = db.Table<Setting> ().FirstOrDefault ()) == null) {
 				db.Insert(setting = new Setting ());
 			}
+			StartupTheme = setting.Theme;
 			SetTheme (setting.Theme);
 			base.OnCreate (bundle);
 
@@ -92,12 +95,20 @@ namespace BlaChat
 
 		protected async override void OnResume() {
 			base.OnResume ();
+			if (StartupTheme != db.Table<Setting> ().FirstOrDefault ().Theme) {
+				Refresh ();
+			}
 			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
 				ShowChats (user);
 			}
 
 			OnBind ();
+		}
+
+		private void Refresh() {
+			Finish();
+			StartActivity(new Intent(this, typeof(MainActivity)));
 		}
 
 		protected override void OnDestroy ()
@@ -152,6 +163,10 @@ namespace BlaChat
 				TextView message = v.FindViewById<TextView>(Resource.Id.chatMessage);
 				TextView time = v.FindViewById<TextView>(Resource.Id.chatTime);
 				ImageView image = v.FindViewById<ImageView> (Resource.Id.chatImage);
+
+				if (elem.Marked) {
+					message.SetTextColor(Color.Green);
+				}
 
 				new Thread (async () => {
 					try {
@@ -224,7 +239,7 @@ namespace BlaChat
 				login.Enabled = false;
 
 				var user = new User() {
-					user = FindViewById<EditText> (Resource.Id.username).Text,
+					user = FindViewById<EditText> (Resource.Id.username).Text.ToLower(),
 					password = FindViewById<EditText> (Resource.Id.password).Text,
 					server = !string.IsNullOrEmpty (FindViewById<EditText> (Resource.Id.server).Text) ?
 						FindViewById<EditText> (Resource.Id.server).Text :

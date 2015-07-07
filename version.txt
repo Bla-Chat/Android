@@ -1,2 +1,11 @@
-2.9 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
-* Fixed messages appearing twice
+3.0 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
+* Keyboard does not minimize after send.
+* Notifications are improved and disappear when opening a chat.
+* Messages appear even before send, with a sending timestamp
+* Live update theme supported.
+* Chats with unread messages are marked green.
+* Implemented logout button.
+* Profile image is shown in settings.
+* Settings work even before login.
+* More global Settings.
+* Chat Settings (Notifications, Visible Messages, Read up to..., Change image)

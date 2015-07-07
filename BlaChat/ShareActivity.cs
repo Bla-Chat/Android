@@ -208,6 +208,7 @@ namespace BlaChat
 
 				v.Clickable = true;
 				v.Click += delegate {
+					Finish();
 					var intent = new Intent (this, typeof(ChatActivity));
 					intent.PutExtra ("conversation", elem.conversation);
 					StartActivity (intent);

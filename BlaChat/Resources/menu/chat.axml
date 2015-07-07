@@ -8,7 +8,12 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Settings"/>
+        android:title="Global Settings"/>
+    <item
+        android:id="@+id/action_localsettings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Chat Settings"/>
     <item
         android:id="@+id/action_moreMessages"
         android:showAsAction="always"
@@ -22,13 +27,5 @@
     <item
         android:id="@+id/action_defaultMessages"
         android:showAsAction="never"
-        android:title="Minimal Messages" />
-    <item
-        android:id="@+id/action_rename"
-        android:title="Rename Conversation"
-        android:titleCondensed="Rename" />
-    <item
-        android:id="@+id/action_setImage"
-        android:showAsAction="never"
-        android:title="Set Image (global)" />
+        android:title="Default Messages" />
 </menu>    

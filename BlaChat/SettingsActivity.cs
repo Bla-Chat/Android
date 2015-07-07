@@ -11,6 +11,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Text;
+using System.Threading;
+using Android.Util;
 
 namespace BlaChat
 {
@@ -20,6 +22,7 @@ namespace BlaChat
 		DataBaseWrapper db = null;
 		User user = null;
 		Setting setting = null;
+		AsyncNetwork network;
 
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -30,6 +33,7 @@ namespace BlaChat
 			SetTheme (setting.Theme);
 			base.OnCreate (bundle);
 
+			network = new AsyncNetwork ();
 			db = new DataBaseWrapper (this.Resources);
 			user = db.Table<User>().FirstOrDefault ();
 
@@ -42,6 +46,11 @@ namespace BlaChat
 			InitializeView();
 		}
 
+		void Refresh() {
+			Finish();
+			StartActivity(new Intent(this, typeof(SettingsActivity)));
+		}
+
 		void InitializeView ()
 		{
 			var smallFont = FindViewById<RadioButton> (Resource.Id.smallfont);
@@ -52,9 +61,9 @@ namespace BlaChat
 			mediumFont.Checked = setting.FontSize == Setting.Size.medium;
 			largeFont.Checked = setting.FontSize == Setting.Size.large;
 
-			largeFont.CheckedChange += delegate { if (largeFont.Checked) { setting.FontSize = Setting.Size.large; db.Update(setting); }};
-			mediumFont.CheckedChange += delegate { if (mediumFont.Checked) { setting.FontSize = Setting.Size.medium; db.Update(setting); }};
-			smallFont.CheckedChange += delegate { if (smallFont.Checked) { setting.FontSize = Setting.Size.small; db.Update(setting); }};
+			largeFont.CheckedChange += delegate { if (largeFont.Checked) { setting.FontSize = Setting.Size.large; db.Update(setting); Refresh(); }};
+			mediumFont.CheckedChange += delegate { if (mediumFont.Checked) { setting.FontSize = Setting.Size.medium; db.Update(setting); Refresh(); }};
+			smallFont.CheckedChange += delegate { if (smallFont.Checked) { setting.FontSize = Setting.Size.small; db.Update(setting); Refresh(); }};
 
 			var lightTheme = FindViewById<RadioButton> (Resource.Id.lighttheme);
 			var darkTheme = FindViewById<RadioButton> (Resource.Id.darktheme);
@@ -67,24 +76,24 @@ namespace BlaChat
 
 			lightTheme.Checked = setting.Theme == Resource.Style.LightHolo;
 			darkTheme.Checked = setting.Theme == Resource.Style.DarkHolo;
-			lightTheme.CheckedChange += delegate { if (lightTheme.Checked) {setting.Theme = Resource.Style.LightHolo; db.Update(setting); } };
-			darkTheme.CheckedChange += delegate { if (darkTheme.Checked) { setting.Theme = Resource.Style.DarkHolo; db.Update(setting); }};
+			lightTheme.CheckedChange += delegate { if (lightTheme.Checked) {setting.Theme = Resource.Style.LightHolo; db.Update(setting);  Refresh();} };
+			darkTheme.CheckedChange += delegate { if (darkTheme.Checked) { setting.Theme = Resource.Style.DarkHolo; db.Update(setting);  Refresh();}};
 
 			if ((int)Android.OS.Build.VERSION.SdkInt >= 21) {
 				materialTheme.Checked = setting.Theme == Resource.Style.LightMaterial;
 				materialThemeDark.Checked = setting.Theme == Resource.Style.DarkMaterial;
-				materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Resource.Style.LightMaterial; db.Update(setting); }};
-				materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Resource.Style.DarkMaterial; db.Update(setting); }};
+				materialTheme.CheckedChange += delegate { if (materialTheme.Checked) { setting.Theme = Resource.Style.LightMaterial; db.Update(setting);  Refresh();}};
+				materialThemeDark.CheckedChange += delegate { if (materialThemeDark.Checked) { setting.Theme = Resource.Style.DarkMaterial; db.Update(setting);  Refresh();}};
 
 				materialThemeBlue.Checked = setting.Theme == Resource.Style.LightBlueMaterial;
 				materialThemeDarkBlue.Checked = setting.Theme == Resource.Style.DarkBlueMaterial;
-				materialThemeBlue.CheckedChange += delegate { if (materialThemeBlue.Checked) { setting.Theme = Resource.Style.LightBlueMaterial; db.Update(setting); }};
-				materialThemeDarkBlue.CheckedChange += delegate { if (materialThemeDarkBlue.Checked) { setting.Theme = Resource.Style.DarkBlueMaterial; db.Update(setting); }};
+				materialThemeBlue.CheckedChange += delegate { if (materialThemeBlue.Checked) { setting.Theme = Resource.Style.LightBlueMaterial; db.Update(setting);  Refresh();}};
+				materialThemeDarkBlue.CheckedChange += delegate { if (materialThemeDarkBlue.Checked) { setting.Theme = Resource.Style.DarkBlueMaterial; db.Update(setting);  Refresh();}};
 
 				materialThemeGreen.Checked = setting.Theme == Resource.Style.LightGreenMaterial;
 				materialThemeDarkGreen.Checked = setting.Theme == Resource.Style.DarkGreenMaterial;
-				materialThemeGreen.CheckedChange += delegate { if (materialThemeGreen.Checked) { setting.Theme = Resource.Style.LightGreenMaterial; db.Update(setting); }};
-				materialThemeDarkGreen.CheckedChange += delegate { if (materialThemeDarkGreen.Checked) { setting.Theme = Resource.Style.DarkGreenMaterial; db.Update(setting); }};
+				materialThemeGreen.CheckedChange += delegate { if (materialThemeGreen.Checked) { setting.Theme = Resource.Style.LightGreenMaterial; db.Update(setting);  Refresh();}};
+				materialThemeDarkGreen.CheckedChange += delegate { if (materialThemeDarkGreen.Checked) { setting.Theme = Resource.Style.DarkGreenMaterial; db.Update(setting);  Refresh();}};
 			} else {
 				materialTheme.Visibility = ViewStates.Gone;
 				materialThemeDark.Visibility = ViewStates.Gone;
@@ -95,6 +104,13 @@ namespace BlaChat
 				materialThemeGreen.Visibility = ViewStates.Gone;
 				materialThemeDarkGreen.Visibility = ViewStates.Gone;
 			}
+
+			var readMessages = FindViewById<CheckBox> (Resource.Id.readMessages);
+			readMessages.Checked = setting.ReadMessagesEnabled;
+			readMessages.CheckedChange += delegate { setting.ReadMessagesEnabled = readMessages.Checked; db.Update(setting); };
+			var visibleMessages = FindViewById<EditText> (Resource.Id.visibleMessages);
+			visibleMessages.Text = setting.VisibleMessages.ToString();
+			visibleMessages.TextChanged += delegate { try { setting.VisibleMessages = int.Parse(visibleMessages.Text); db.Update(setting); } catch (Exception) { setting.VisibleMessages = 0; db.Update(setting); } };
 
 			var notifications = FindViewById<CheckBox> (Resource.Id.notifications);
 			var vibrate = FindViewById<CheckBox> (Resource.Id.vibrate);
@@ -128,11 +144,48 @@ namespace BlaChat
 
 			var server = FindViewById<TextView> (Resource.Id.server);
 			var nickname = FindViewById<TextView> (Resource.Id.nickname);
-			server.Text = user.server;
-			nickname.Text = user.user;
+			var changeProfile = FindViewById<ImageButton> (Resource.Id.changeProfile);
+			var savechanges = FindViewById<Button> (Resource.Id.save);
+			var logout = FindViewById<Button> (Resource.Id.logout);
+			var name = FindViewById<EditText> (Resource.Id.name);
+
+			if (user != null) {
+				server.Text = user.server;
+				nickname.Text = user.user;
+				name.Text = user.name;
+				logout.Click += delegate {
+					db.DropUserSpecificData();
+					var intent = new Intent (this, typeof(MainActivity));
+					intent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+					Finish();
+					StartActivity (intent);
+				};
+				savechanges.Click += delegate {
+					Toast.MakeText(this, "Not implemented yet.", ToastLength.Long).Show();
+				};
+				changeProfile.Click += delegate {
+					Toast.MakeText(this, "Not implemented yet.", ToastLength.Long).Show();
+				};
+				new Thread (async () => {
+					try {
+						var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + user.user + ".png");
+						RunOnUiThread (() => changeProfile.SetImageBitmap (imageBitmap));
+					} catch (Exception e) {
+						Log.Error ("BlaChat", e.StackTrace);
+					}
+				}).Start ();
+			} else {
+				server.Text = "none";
+				nickname.Text = "none";
+				name.Enabled = false;
+				changeProfile.Visibility = ViewStates.Gone;
+				savechanges.Visibility = ViewStates.Gone;
+				logout.Visibility = ViewStates.Gone;
+			}
 
 			var currentVersion = FindViewById<TextView> (Resource.Id.version);
 			var newestVersion = FindViewById<TextView> (Resource.Id.newestVersion);
+
 
 			currentVersion.Text = Setting.CurrentVersion;
 			if (setting.NewestVersion != null && !setting.NewestVersion.StartsWith (Setting.CurrentVersion)) {

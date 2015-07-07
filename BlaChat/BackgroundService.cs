@@ -140,8 +140,10 @@ namespace BlaChat
 			db.InsertIfNotContains<Message> (msg);
 
 			ResetUpdateInterval ();
-			if (e.msg != ActiveConversation) {
-				if (user.user != e.nick) {
+			if (e.msg != ActiveConversation && user.user != e.nick) {
+				chat.Marked = true;
+				db.Update (chat);
+				if (chat.Notifications) {
 					await Notify (network, e.nick, e.text);
 				}
 			}
@@ -151,6 +153,17 @@ namespace BlaChat
 				MainActivity.OnUpdateRequested ();
 			}
 			return 0;
+		}
+
+		public async Task<int> CancelNotify(string conversation) {
+			var chat = db.Get<Chat> (conversation);
+			chat.Marked = false;
+			db.Update (chat);
+			NotificationManager notificationManager =
+				GetSystemService (Context.NotificationService) as NotificationManager;
+			const int notificationId = 0;
+			notificationManager.Cancel (notificationId);
+			return notificationId;
 		}
 
 		private async Task<int> Notify(AsyncNetwork network, string title, string message) {
