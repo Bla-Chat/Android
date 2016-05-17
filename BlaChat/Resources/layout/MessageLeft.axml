@@ -15,19 +15,27 @@
             android:layout_width="32.0dp"
             android:layout_height="32.0dp"
             android:tag="Message Image"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:layout_marginTop="3dp" />
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout2">
+            android:id="@+id/linearLayout2"
+            android:background="#E5F8E5"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:padding="5dp">
             <TextView
                 android:text="Author (time)"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/messageCaption"
-                android:paddingLeft="4dp" />
+                android:paddingLeft="4dp"
+                android:textColor="#333333" />
             <TextView
                 android:text="Text"
                 android:id="@+id/messageText"
@@ -36,9 +44,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:paddingRight="40dp"
+                android:paddingRight="0dp"
                 android:textIsSelectable="true"
-                android:autoLink="all" />
+                android:autoLink="all"
+                android:textColor="#333333" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

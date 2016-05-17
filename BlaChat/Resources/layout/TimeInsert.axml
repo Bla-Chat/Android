@@ -12,6 +12,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/timeInsertTime"
         android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp" />
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
 </LinearLayout>

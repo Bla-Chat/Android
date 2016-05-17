@@ -2,34 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:minWidth="25px"
-    android:minHeight="25px">
-    <TextView
-        android:text="You (Time)"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/messageCaption"
-        android:gravity="right"
-        android:paddingRight="4dp" />
-    <RelativeLayout
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relativeLayout1"
-        android:paddingLeft="80dp"
-        android:paddingRight="10dp"
-        android:gravity="right">
+        android:background="#DEF0F0"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:padding="5dp">
         <TextView
-            android:text="Text"
-            android:id="@+id/messageText"
-            android:gravity="left"
-            android:tag="Message Text"
-            android:textIsSelectable="true"
-            android:autoLink="all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+            android:text="You (Time)"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/messageCaption"
+            android:gravity="right"
+            android:paddingRight="4dp"
+            android:textColor="#333333" />
+        <RelativeLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relativeLayout1"
+            android:paddingLeft="0dp"
+            android:paddingRight="10dp"
+            android:gravity="right">
+            <TextView
+                android:text="Text"
+                android:id="@+id/messageText"
+                android:gravity="left"
+                android:tag="Message Text"
+                android:textIsSelectable="true"
+                android:autoLink="all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#333333" />
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

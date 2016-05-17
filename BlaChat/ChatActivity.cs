@@ -319,8 +319,12 @@ namespace BlaChat
 					ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
 					new Thread (async () => {
 						try {
-							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + ".png");
-							RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
+							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + "_mini.png");
+                            if (imageBitmap == null)
+                            {
+                                imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png");
+                            }
+                            RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
 						} catch (Exception e) {
 							Log.Error ("BlaChat", e.StackTrace);
 						}
@@ -363,8 +367,12 @@ namespace BlaChat
 					ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
 					new Thread (async () => {
 						try {
-							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + ".png");
-							RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
+							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + "_mini.png");
+                            if (imageBitmap == null)
+                            {
+                                imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png");
+                            }
+                            RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
 						} catch (Exception e) {
 							Log.Error ("BlaChat", e.StackTrace);
 						}
