@@ -62,35 +62,40 @@ namespace BlaChat
 			if (visibleMessages <= 0) {
 				visibleMessages = 30;
 			}
-			Title = chat.name;
+			Title = SmileyTools.GetSmiledTextUTF(chat.name);
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetIcon (Resource.Drawable.Icon);
 
 			user = db.Table<User>().FirstOrDefault ();
 
-			Button send = FindViewById<Button> (Resource.Id.send);
-			send.Click += delegate {
-				TextView message = FindViewById<TextView> (Resource.Id.message);
-				var msg = message.Text;
-				message.Text = "";
+            Button send = FindViewById<Button>(Resource.Id.send);
+            send.Click += delegate {
+                TextView message = FindViewById<TextView>(Resource.Id.message);
+                var msg = message.Text;
+                message.Text = "";
 
-				if (msg.Equals("")) return;
+                if (msg.Equals("")) return;
 
-				LinearLayout messageList = FindViewById<LinearLayout> (Resource.Id.messageLayout);
-				AddMessage(messageList, new Message() {time = "sending", author = "Du", nick = user.user, text = msg, conversation = this.conversation});
+                LinearLayout messageList = FindViewById<LinearLayout>(Resource.Id.messageLayout);
+                AddMessage(messageList, new Message() { time = "sending", author = "Du", nick = user.user, text = msg, conversation = this.conversation });
 
-				ScrollView scrollView = FindViewById<ScrollView> (Resource.Id.messageScrollView);
-				scrollView.FullScroll (FocusSearchDirection.Down);
-				scrollView.Post (() => scrollView.FullScroll (FocusSearchDirection.Down));
+                ScrollView scrollView = FindViewById<ScrollView>(Resource.Id.messageScrollView);
+                scrollView.FullScroll(FocusSearchDirection.Down);
+                scrollView.Post(() => scrollView.FullScroll(FocusSearchDirection.Down));
 
-				OnBind();
-				new Thread(async () => {
-					while(!await network.SendMessage (db, user, chat, msg)) {
-						await network.Authenticate(db, user);
-					}
-				}).Start();
-			};
-		}
+                OnBind();
+                new Thread(async () => {
+                    while (!await network.SendMessage(db, user, chat, msg))
+                    {
+                        await network.Authenticate(db, user);
+                    }
+                }).Start();
+            };
+            Button smiley = FindViewById<Button>(Resource.Id.smile);
+            smiley.Click += delegate {
+                // TODO implement smiley stuff...
+            };
+        }
 
 		public override bool OnPrepareOptionsMenu(IMenu menu)
 		{
@@ -392,21 +397,21 @@ namespace BlaChat
 				escape = escape.Replace ("&lt;", "<");
 				escape = escape.Replace ("&gt;", ">");
 				escape = escape.Replace ("&amp;", "&");
-				text.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (escape));
+				text.Text = SmileyTools.GetSmiledTextUTF (escape);
 			}
             
             TextView msgTime = v.FindViewById<TextView>(Resource.Id.messageTime);
 
             if (elem.time == "sending")
             {
-                msgTime.TextFormatted = SpannableTools.GetSmiledText(this, new SpannableString(elem.time));
+                msgTime.Text = SmileyTools.GetSmiledTextUTF(elem.time);
             } else
             {
-                msgTime.TextFormatted = SpannableTools.GetSmiledText(this, new SpannableString(elem.time.Substring(11, 5)));
+                msgTime.Text = SmileyTools.GetSmiledTextUTF(elem.time.Substring(11, 5));
             }
             TextView caption = v.FindViewById<TextView> (Resource.Id.messageCaption);
             if (elem.nick != user.user) {
-				caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (elem.author));
+				caption.Text = SmileyTools.GetSmiledTextUTF(elem.author);
 
             } else {
 			    caption.Text = "Du";

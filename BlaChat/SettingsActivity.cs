@@ -189,7 +189,7 @@ namespace BlaChat
 
 			currentVersion.Text = Setting.CurrentVersion;
 			if (setting.NewestVersion != null && !setting.NewestVersion.StartsWith (Setting.CurrentVersion)) {
-				newestVersion.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(setting.NewestVersion));
+				newestVersion.Text = SmileyTools.GetSmiledTextUTF (setting.NewestVersion);
 			} else {
 				newestVersion.Text = Setting.CurrentVersion;
 			}

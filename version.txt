@@ -1,5 +1,2 @@
-3.2 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
-* Colorized chat messages
-* More clear chat overview
-* Syncing improved
-* Notifications improved even when app gets killed
+3.3 https://github.com/Bla-Chat/Android/blob/master/BlaChat.apk?raw=true
+* Smileys

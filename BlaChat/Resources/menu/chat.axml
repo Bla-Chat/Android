@@ -3,7 +3,7 @@
         android:id="@+id/action_sendImage"
         android:showAsAction="always"
         android:title="Image"
-        android:titleCondensed="Img" />
+        android:titleCondensed="IMG" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
@@ -16,12 +16,12 @@
         android:title="Chat Settings"/>
     <item
         android:id="@+id/action_moreMessages"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="More Messages"
         android:titleCondensed="+" />
     <item
         android:id="@+id/action_lessMessages"
-        android:showAsAction="always"
+        android:showAsAction="never"
         android:title="Less Messages"
         android:titleCondensed="-" />
     <item

@@ -201,7 +201,7 @@ namespace BlaChat
 					}
 				}).Start();
 
-				name.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(elem.name));
+				name.Text = SmileyTools.GetSmiledTextUTF(elem.name);
 				var tmp = db.Table<Message> ().Where (q => q.conversation == elem.conversation).OrderByDescending (q => q.time);
 				var lastMsg = tmp.FirstOrDefault ();
 				if (lastMsg != null) {
@@ -215,14 +215,14 @@ namespace BlaChat
 						escape = "(video)";
 					}
 					if (lastMsg.nick == user.user) {
-						message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString("Du: " + escape));
+						message.Text = SmileyTools.GetSmiledTextUTF ("Du: " + escape);
                         //message.SetTextColor(Color.DarkBlue);
                         message.SetTypeface(null, TypefaceStyle.Italic);
                     } else {
 						if (elem.conversation.Split (',').Length == 2 && lastMsg.nick != "watchdog") {
-							message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(escape));
+							message.Text = SmileyTools.GetSmiledTextUTF(escape);
 						} else {
-							message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(lastMsg.author + ": " + escape));
+							message.Text = SmileyTools.GetSmiledTextUTF(lastMsg.author + ": " + escape);
                         }
                         //message.SetTextColor(Color.DarkGreen);
                     }
