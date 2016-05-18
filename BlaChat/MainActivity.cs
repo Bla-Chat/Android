@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Android.Views.InputMethods;
 using Android.Text;
 using Android.Graphics;
+using System.Runtime.CompilerServices;
 
 namespace BlaChat
 {
@@ -50,7 +51,7 @@ namespace BlaChat
 		public async void OnUpdateRequested() {
 			User user = db.Table<User>().FirstOrDefault ();
 			if (user != null && user.user != null) {
-				RunOnUiThread (() => ShowChats (user));
+				RunOnUiThread (() => { if (isUnbound()) return; ShowChats(user); });
 			}
 		}
 
@@ -69,7 +70,16 @@ namespace BlaChat
 			}
 		}
 
-		public override bool OnPrepareOptionsMenu(IMenu menu)
+        private bool isUnbound()
+        {
+            if (service != null)
+            {
+                return service.MainActivity == null;
+            }
+            return true;
+        }
+
+        public override bool OnPrepareOptionsMenu(IMenu menu)
 		{
 			menu.Clear ();
 			MenuInflater.Inflate(Resource.Menu.main, menu);
@@ -141,7 +151,8 @@ namespace BlaChat
 			ShowChats (user);
 		}
 
-		private void ShowChats(User user) {
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void ShowChats(User user) {
 			TextView placeholder = FindViewById<TextView> (Resource.Id.placeholder);
 			var x = db.Table<Chat> ();
 			if (x.Count() > 0) {
@@ -164,8 +175,9 @@ namespace BlaChat
 				TextView time = v.FindViewById<TextView>(Resource.Id.chatTime);
 				ImageView image = v.FindViewById<ImageView> (Resource.Id.chatImage);
 
-				if (elem.Marked) {
-					message.SetTextColor(Color.Green);
+				if (elem.Marked)
+                {
+                    message.SetTypeface(null, TypefaceStyle.Bold);
 				}
 
 				new Thread (async () => {
@@ -178,12 +190,12 @@ namespace BlaChat
 								conv = conv.Split(',')[0];
 							}
 						}
-						var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + conv + "_mini.png");
+						var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + conv + "_mini.png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
                         if (imageBitmap == null)
                         {
-                            imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png");
+                            imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
                         }
-						RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
+						RunOnUiThread(() => { if (isUnbound()) return; image.SetImageBitmap(imageBitmap); });
 					} catch (Exception e) {
 						Log.Error("BlaChat", e.StackTrace);
 					}
@@ -204,13 +216,16 @@ namespace BlaChat
 					}
 					if (lastMsg.nick == user.user) {
 						message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString("Du: " + escape));
-					} else {
+                        //message.SetTextColor(Color.DarkBlue);
+                        message.SetTypeface(null, TypefaceStyle.Italic);
+                    } else {
 						if (elem.conversation.Split (',').Length == 2 && lastMsg.nick != "watchdog") {
 							message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(escape));
 						} else {
 							message.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString(lastMsg.author + ": " + escape));
-						}
-					}
+                        }
+                        //message.SetTextColor(Color.DarkGreen);
+                    }
 					time.Text = TimeConverter.AutoConvert(lastMsg.time);
 				} else {
 					time.Text = "";
@@ -266,7 +281,7 @@ namespace BlaChat
 						var x = db.Table<Chat> ();
 						int count = x.Count();
 						var tasks = new List<Task<bool>>();
-						RunOnUiThread(() => initializeAuthenticated(user));
+						RunOnUiThread(() => { if (isUnbound()) return; initializeAuthenticated(user); });
 
 						foreach (var chat in x) {
 							while(!await network.UpdateHistory(db, user, chat, 30)) {

@@ -168,7 +168,7 @@ namespace BlaChat
 				};
 				new Thread (async () => {
 					try {
-						var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + user.user + ".png");
+						var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + user.user + ".png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
 						RunOnUiThread (() => changeProfile.SetImageBitmap (imageBitmap));
 					} catch (Exception e) {
 						Log.Error ("BlaChat", e.StackTrace);

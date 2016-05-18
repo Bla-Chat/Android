@@ -23,7 +23,7 @@ namespace BlaChat
 		private DataBaseWrapper db = null;
 		private AsyncNetwork network = null;
 		private User user = null;
-		private int UpdateInterval = 10000;
+		private int UpdateInterval = 1000;
 		private int connectivityMode = 1;
 
 		public BackgroundService ()
@@ -95,7 +95,7 @@ namespace BlaChat
 						} else if (UpdateInterval < 30000) {
 							UpdateInterval += 2000;
 						} else {
-							UpdateInterval = 120000;
+							UpdateInterval = 60000;
 						}
 					}
 				}
@@ -204,7 +204,7 @@ namespace BlaChat
 					NotificationCompat.BigPictureStyle picStyle = new NotificationCompat.BigPictureStyle ();
 
 					// Convert the image to a bitmap before passing it into the style:
-					picStyle.BigPicture (await network.GetImageBitmapFromUrlNoCache (message.Substring ("#image ".Length)));
+					picStyle.BigPicture (await network.GetImageBitmapFromUrlNoCache (message.Substring ("#image ".Length), AsyncNetwork.IMAGE_SIZE, AsyncNetwork.IMAGE_SIZE));
 
 					// Set the summary text that will appear with the image:
 					picStyle.SetSummaryText (msg);

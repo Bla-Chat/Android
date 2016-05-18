@@ -18,6 +18,8 @@ namespace BlaChat
 {	
 	public class AsyncNetwork
 	{
+        public static int MINI_PROFILE_SIZE = 100;
+        public static int IMAGE_SIZE = 400;
 		private static Object taskCacheLocker = new object();
 		private static Semaphore semaphore = new Semaphore (1, 1);
 		private Dictionary<string, Task<Bitmap>> bitmaps = new Dictionary<string, Task<Bitmap>>();
@@ -28,24 +30,24 @@ namespace BlaChat
 			backgroundService = bs;
 		}
 
-		public Task<Bitmap> GetImageBitmapFromUrl(string url)
+		public Task<Bitmap> GetImageBitmapFromUrl(string url, int reqWidth, int reqHeight)
 		{
 			lock (taskCacheLocker) {
 				if (bitmaps.ContainsKey (url)) {
 					return bitmaps [url];
 				}
-				return bitmaps[url] = GetImageBitmapFromUrlAsync(url);
+				return bitmaps[url] = GetImageBitmapFromUrlAsync(url, reqWidth, reqHeight);
 			}
 		}
 
-		public Task<Bitmap> GetImageBitmapFromUrlNoCache (string url)
+		public Task<Bitmap> GetImageBitmapFromUrlNoCache (string url, int reqWidth, int reqHeight)
 		{
 			lock (taskCacheLocker) {
-				return GetImageBitmapFromUrlAsync(url);
+				return GetImageBitmapFromUrlAsync(url, reqWidth, reqHeight);
 			}
 		}
 
-		private async Task<Bitmap> GetImageBitmapFromUrlAsync(string url) {
+		private async Task<Bitmap> GetImageBitmapFromUrlAsync(string url, int reqWidth, int reqHeight) {
 			Bitmap imageBitmap = null;
 
 			string images = System.IO.Path.Combine (Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Pictures/BlaChat");
@@ -64,8 +66,8 @@ namespace BlaChat
 							imageBytes = await httpClient.GetByteArrayAsync (url);
 						}
 					} catch (Exception e) {
-						Log.Error ("BlaChat", e.StackTrace);
-						Log.Error ("BlaChat", "Image: " + url);
+						//Log.Error ("BlaChat", e.StackTrace);
+						//Log.Error ("BlaChat", "Image: " + url);
 						imageBytes = null;
 					} finally {
 						semaphore.Release ();
@@ -89,13 +91,61 @@ namespace BlaChat
 				} catch (Exception e) {
 					Log.Error ("BlaChat", e.StackTrace);
 				}
-			} else {
-				imageBitmap = BitmapFactory.DecodeFile (imageName, new BitmapFactory.Options ());
 			}
+            if (File.Exists(imageName)) {
+                BitmapFactory.Options options = GetBitmapOptionsOfImage(imageName);
+                imageBitmap = LoadScaledDownBitmapForDisplay(imageName, options, reqWidth, reqHeight);
+            }
 			return imageBitmap;
 		}
 
-		public async Task<string> Download(string url)
+        private BitmapFactory.Options GetBitmapOptionsOfImage(string imageName)
+        {
+            BitmapFactory.Options options = new BitmapFactory.Options
+            {
+                InJustDecodeBounds = true
+            };
+
+            // The result will be null because InJustDecodeBounds == true.
+            Bitmap imageBitmap = BitmapFactory.DecodeFile(imageName, options);
+                        
+            return options;
+        }
+
+        private static int CalculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
+        {
+            // Raw height and width of image
+            float height = options.OutHeight;
+            float width = options.OutWidth;
+            double inSampleSize = 1D;
+
+            if (height > reqHeight || width > reqWidth)
+            {
+                int halfHeight = (int)(height / 2);
+                int halfWidth = (int)(width / 2);
+
+                // Calculate a inSampleSize that is a power of 2 - the decoder will use a value that is a power of two anyway.
+                while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth)
+                {
+                    inSampleSize *= 2;
+                }
+            }
+
+            return (int)inSampleSize;
+        }
+
+        private Bitmap LoadScaledDownBitmapForDisplay(string imageName, BitmapFactory.Options options, int reqWidth, int reqHeight)
+        {
+            // Calculate inSampleSize
+            options.InSampleSize = CalculateInSampleSize(options, reqWidth, reqHeight);
+
+            // Decode bitmap with inSampleSize set
+            options.InJustDecodeBounds = false;
+
+            return BitmapFactory.DecodeFile(imageName, options);
+        }
+
+        public async Task<string> Download(string url)
 		{
 			string contentsTask = null;
 			while (contentsTask == null) {
@@ -117,9 +167,20 @@ namespace BlaChat
 			return contentsTask;
 		}
 
+        private string getLatestTime(DataBaseWrapper db)
+        {
+            var x = db.Table<Chat>();
+            string latest_conversation = x.OrderByDescending(e => e.time).First<Chat>().conversation;
+            var y = db.Table<Message>();
+            Message tmp = y.Where(q => q.conversation == latest_conversation).OrderBy(e => e.time).Last<Message>();
+            string lastid = String.Format("\"time\":\"{0}\"", tmp.time);
+            return lastid;
+        }
+
 		private async Task<bool> CommonNetworkOperations(DataBaseWrapper db, String request, User user, String actionKey, Action<JsonValue> action) {
-			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", {1}}}", user.id, request));
-			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
+            
+            string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", {1}, {2}}}", user.id, request, getLatestTime(db)));
+			var result = JsonValue.Parse (await Download (user.server + "/xjcp2.php?msg=" + encodedJson));
 			bool success = false;
 			try {
 				if (result.ContainsKey (actionKey)) {
@@ -138,7 +199,7 @@ namespace BlaChat
 			string encodedJson = escape (String.Format ("{{\"user\":\"{0}\", \"pw\":\"{1}\"}}", user.user, user.password));
 			bool success = false;
 
-			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
+			var result = JsonValue.Parse (await Download (user.server + "/xjcp2.php?msg=" + encodedJson));
 			try {
 				if (result.ContainsKey ("id")) {
 					user.id = result ["id"];
@@ -207,13 +268,13 @@ namespace BlaChat
 
 		public async Task<bool> SendImage (DataBaseWrapper db, User user, Chat chat, Bitmap bitmap)
 		{
-			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", \"data\":{{\"conversation\":\"{1}\"}}}}", user.id, chat.conversation));
+			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\", \"data\":{{\"conversation\":\"{1}\"}}, {2}}}", user.id, chat.conversation, getLatestTime(db)));
 			var success = false;
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("msg", encodedJson);
 			string tmp = null;
 			while (tmp == null) {
-				tmp = HttpUploadFile (user.server + "/xjcp.php", bitmap, "uploadedfile", "image/png", nvc);
+				tmp = HttpUploadFile (user.server + "/xjcp2.php", bitmap, "uploadedfile", "image/png", nvc);
 			}
 			var result = JsonValue.Parse (tmp);
 
@@ -298,9 +359,9 @@ namespace BlaChat
 		}
 
 		private async Task<bool> InternalUpdateEvents(DataBaseWrapper db, User user) {
-			string encodedJson = escape (String.Format ("{{\"id\":\"{0}\"}}", user.id));
-
-			var result = JsonValue.Parse (await Download (user.server + "/xjcp.php?msg=" + encodedJson));
+            string encodedJson = escape (String.Format("{{\"id\":\"{0}\", {1}}}", user.id, getLatestTime(db)));
+            
+            var result = JsonValue.Parse (await Download(user.server + "/xjcp2.php?msg=" + encodedJson));
 			var success = false;
 			try {
 				success = 0 == await EventHandling (db, result);
@@ -315,9 +376,9 @@ namespace BlaChat
 
 		public async Task<bool> RemoveEvent(DataBaseWrapper db, User user, Event e)
 		{
-			string encodedJson = escape(String.Format("{{\"id\":\"{0}\", \"removeEvent\":{{\"conversation\":\"{1}\"}}}}", user.id, e.msg));
+			string encodedJson = escape(String.Format("{{\"id\":\"{0}\", \"removeEvent\":{{\"conversation\":\"{1}\"}}, {2}}}", user.id, e.msg, getLatestTime(db)));
 
-			var result = JsonValue.Parse(await Download(user.server + "/xjcp.php?msg=" + encodedJson));
+			var result = JsonValue.Parse(await Download(user.server + "/xjcp2.php?msg=" + encodedJson));
 			var success = false;
 			try {
 				success = 0 == await EventHandling (db, result);

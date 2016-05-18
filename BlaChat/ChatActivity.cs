@@ -164,7 +164,7 @@ namespace BlaChat
 					while(!await network.UpdateHistory(db, user, chat, visibleMessages)) {
 						await network.Authenticate(db, user);
 					}
-					RunOnUiThread(() => UpdateMessages (user));
+					RunOnUiThread(() => { if (isUnbound()) return; UpdateMessages(user); });
 				}).Start();
 			} else {
 				UpdateMessages (user);
@@ -245,8 +245,8 @@ namespace BlaChat
 
 		public async void OnUpdateRequested() {
 			lock (this) {
-				if (user != null && user.user != null) {
-					RunOnUiThread (() => UpdateMessagesScrollDown (user));
+                if (user != null && user.user != null) {
+                    RunOnUiThread(() => { if (isUnbound()) return; UpdateMessagesScrollDown(user); });
 				}
 			}
 		}
@@ -267,6 +267,15 @@ namespace BlaChat
 			base.OnPause ();
 			OnUnBind ();
 		}
+
+        private bool isUnbound()
+        {
+            if (service != null)
+            {
+                return service.ChatActivity == null;
+            }
+            return true;
+        }
 
 		private void UpdateMessagesScrollDown(User user) {
 				UpdateMessages (user);
@@ -319,12 +328,12 @@ namespace BlaChat
 					ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
 					new Thread (async () => {
 						try {
-							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + "_mini.png");
+							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + "_mini.png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
                             if (imageBitmap == null)
                             {
-                                imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png");
+                                imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
                             }
-                            RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
+                            RunOnUiThread (() => { if (isUnbound()) return; image.SetImageBitmap(imageBitmap); });
 						} catch (Exception e) {
 							Log.Error ("BlaChat", e.StackTrace);
 						}
@@ -345,8 +354,8 @@ namespace BlaChat
 				new Thread (async () => {
 					try {
 						var uri = elem.text.Substring ("#image ".Length);
-						var imageBitmap = await network.GetImageBitmapFromUrl (uri);
-						RunOnUiThread (() => contentImage.SetImageBitmap (imageBitmap));
+						var imageBitmap = await network.GetImageBitmapFromUrl (uri, AsyncNetwork.IMAGE_SIZE, AsyncNetwork.IMAGE_SIZE);
+						RunOnUiThread (() => { if (isUnbound()) return; contentImage.SetImageBitmap(imageBitmap); });
 					} catch (Exception e) {
 						Log.Error ("BlaChat", e.StackTrace);
 					}
@@ -367,12 +376,12 @@ namespace BlaChat
 					ImageView image = v.FindViewById<ImageView> (Resource.Id.messageImage);
 					new Thread (async () => {
 						try {
-							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + "_mini.png");
+							var imageBitmap = await network.GetImageBitmapFromUrl (Resources.GetString (Resource.String.profileUrl) + elem.nick + "_mini.png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
                             if (imageBitmap == null)
                             {
-                                imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png");
+                                imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + "user_mini.png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
                             }
-                            RunOnUiThread (() => image.SetImageBitmap (imageBitmap));
+                            RunOnUiThread (() => { if (isUnbound()) return; image.SetImageBitmap(imageBitmap); });
 						} catch (Exception e) {
 							Log.Error ("BlaChat", e.StackTrace);
 						}

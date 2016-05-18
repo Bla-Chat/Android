@@ -176,7 +176,7 @@ namespace BlaChat
 								conv = conv.Split(',')[0];
 							}
 						}
-						var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + conv + ".png");
+						var imageBitmap = await network.GetImageBitmapFromUrl(Resources.GetString(Resource.String.profileUrl) + conv + ".png", AsyncNetwork.MINI_PROFILE_SIZE, AsyncNetwork.MINI_PROFILE_SIZE);
 						RunOnUiThread(() => image.SetImageBitmap(imageBitmap));
 					} catch (Exception e) {
 						Log.Error("BlaChat", e.StackTrace);
