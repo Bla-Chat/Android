@@ -96,7 +96,7 @@ namespace BlaChat
 		{
 			menu.Clear ();
 			MenuInflater.Inflate(Resource.Menu.chat, menu);
-			if (visibleMessages <= 15) {
+			if (visibleMessages <= 19) {
 				var item = menu.FindItem (Resource.Id.action_lessMessages);
 				item.SetVisible (false);
 				item = menu.FindItem (Resource.Id.action_defaultMessages);
@@ -134,7 +134,7 @@ namespace BlaChat
 		}
 
 		private void lessMessages() {
-			visibleMessages -= 15;
+			visibleMessages -= 10;
 			UpdateMessages (user);
 			InvalidateOptionsMenu ();
 			OnBind();
@@ -156,7 +156,7 @@ namespace BlaChat
 		private void moreMessages() {
 			OnBind();
 
-			visibleMessages += 15;
+			visibleMessages += 10;
 
 			var x = db.Table<Message> ();
 			if (x.Where(q => q.conversation == conversation).Count() < visibleMessages) {
@@ -385,16 +385,22 @@ namespace BlaChat
 				escape = escape.Replace ("&amp;", "&");
 				text.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (escape));
 			}
+            
+            TextView msgTime = v.FindViewById<TextView>(Resource.Id.messageTime);
 
-			TextView caption = v.FindViewById<TextView> (Resource.Id.messageCaption);
-			if (elem.nick != user.user) {
-				caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (elem.author + " (" + elem.time.Substring (11, 5) + ")"));
-			} else {
-				if (elem.time == "sending") {
-					caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString ("Du (" + elem.time + ")"));
-				} else {
-					caption.Text = "Du (" + elem.time.Substring (11, 5) + ")";
-				}
+            if (elem.time == "sending")
+            {
+                msgTime.TextFormatted = SpannableTools.GetSmiledText(this, new SpannableString(elem.time));
+            } else
+            {
+                msgTime.TextFormatted = SpannableTools.GetSmiledText(this, new SpannableString(elem.time.Substring(11, 5)));
+            }
+            TextView caption = v.FindViewById<TextView> (Resource.Id.messageCaption);
+            if (elem.nick != user.user) {
+				caption.TextFormatted = SpannableTools.GetSmiledText (this, new SpannableString (elem.author));
+
+            } else {
+			    caption.Text = "Du";
 			}
 			messageList.AddView (v);
 		}

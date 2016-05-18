@@ -11,14 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/messageScrollView"
-        android:layout_marginBottom="60dp">
+        android:layout_marginBottom="50dp">
         <LinearLayout
             android:orientation="vertical"
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/messageLayout" />
+            android:id="@+id/messageLayout"
+            android:padding="4dp" />
     </ScrollView>
     <LinearLayout
         android:orientation="horizontal"
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/linearLayout1"
         android:gravity="right"
-        android:layout_marginTop="-60dp">
+        android:layout_marginTop="-50dp">
         <EditText
             android:inputType="textMultiLine"
             android:layout_width="match_parent"
